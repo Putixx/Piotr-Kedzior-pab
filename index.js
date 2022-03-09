@@ -1,10 +1,10 @@
 var express = require('express');
 var app = express();
-app.get('/', function (req, res) {
-    var num1 = +req.query.num1;
-    var num2 = +req.query.num2;
+app.get('/:operation/:num1/:num2', function (req, res) {
+    var num1 = +req.params.num1;
+    var num2 = +req.params.num2;
     var wynik = 0;
-    var operation = req.query.operation;
+    var operation = req.params.operation;
     if (operation == "dodaj")
         wynik = num1 + num2;
     if (operation == "odejmij")

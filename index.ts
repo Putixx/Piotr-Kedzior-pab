@@ -1,13 +1,14 @@
 const express = require('express')  
 const app = express()  
-app.get('/', function (req, res) {  
-  const num1 = +req.query.num1;
-  const num2 = +req.query.num2;
+app.get('/:operation/:num1/:num2', function (req, res) {  
+  const num1 = +req.params.num1;
+  const num2 = +req.params.num2;
   let wynik:number = 0;
-  const operation = req.query.operation;
+  const operation = req.params.operation;
 
-  if(operation == "dodaj")
+  if(operation == "dodaj") {
     wynik = num1 + num2;
+  }
   if(operation == "odejmij")
     wynik = num1 - num2;
   if(operation == "podziel")
