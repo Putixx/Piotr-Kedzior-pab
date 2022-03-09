@@ -15,7 +15,7 @@ app.get('/', function (req, res) {
   if(operation == "pomnoz")
     wynik = num1 * num2;
 
-  res.send(wynik.toString())
+  res.send("Wynik operacji " + operation + " to: " + wynik.toString())
 })  
 app.listen(3000)  
 
