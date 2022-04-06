@@ -1,12 +1,16 @@
 export {Note};
 
+import {
+    Tag
+  } from '../models/tag'
+
 class Note
 {
     id?:number;
     title:string;
     content:string;
     createDate?:Date;
-    tags?:string[];
+    tags?:Tag[];
 
     constructor(nt : Note)
     {

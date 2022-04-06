@@ -27,15 +27,21 @@ const tags: Tag[] = [];
 /* FILE ASYNC READ/WRITE BEG */
 
 // FILE ASYNC READ
-async function readStorage(storeFile: string): Promise <string> {
+async function readStorage(storeFile: string): Promise < string > {
 
   return fs.promises.readFile(storeFile, 'utf-8');
 }
 
 // FILE ASYNC WRITE
-async function updateStorage(storeFile: string, dataToSave: string): Promise <void> {
+async function updateStorage(storeFile: string, dataToSave: string): Promise < void > {
   try {
-    await fs.promises.appendFile(storeFile,"\n" + dataToSave);
+    if (fs.existsSync(storeFile)) {
+      if (fs.readFileSync(storeFile, 'utf-8').toString().length === 0) {
+        await fs.promises.appendFile(storeFile, dataToSave);
+      } else {
+        await fs.promises.appendFile(storeFile, "\n" + dataToSave);
+      }
+    }
   } catch (err) {
     console.log(err)
   }
@@ -46,23 +52,40 @@ async function updateStorage(storeFile: string, dataToSave: string): Promise <vo
 /* POST BEG */
 
 // POST note
-app.post('/note', function (req: Request, res: Response) {
+app.post('/note', async function (req: Request, res: Response) {
   console.log(req.body) // e.x. req.body.title 
 
   if (req.body !== null && req.body !== undefined && req.body.title !== undefined && req.body.content !== undefined) {
     const data = JSON.parse(JSON.stringify(req.body));
-    
+
     notes.push({
       id: Date.now(),
       title: data.title,
       content: data.content,
       createDate: new Date(),
-      tags: [ ...data.tags ]
+      tags: [...data.tags]
     });
 
     const ind = notes.findIndex(n => n.title === data.title);
     updateStorage('data/notes.txt', JSON.stringify(notes[ind]))
 
+    const dataTags = await readStorage('data/tags.txt');
+
+    if (dataTags !== undefined && dataTags !== null) {
+
+      const tab: string[] = dataTags.toString().replace(/\r\n/g, '\n').split("\n");
+      const tags: Tag[] = [];
+
+      for (let i = 0; i < tab.length; i++) {
+        tags[i] = JSON.parse(tab[i]);
+      }
+
+      for (let i = 0; i < tab.length; i++) {
+        if (!notes[ind].tags.some(t => t.name.toLowerCase() === tags[i].name.toLowerCase())) {
+          updateStorage('data/tags.txt', JSON.stringify(notes[ind].tags))
+        }
+      }
+    }
 
     res.status(201).send("ID wprowadzonej notatki: " + notes[ind].id);
   } else {
@@ -77,9 +100,8 @@ app.post('/tag', function (req: Request, res: Response) {
 
   if (req.body !== null && req.body !== undefined && req.body.name !== undefined) {
     const data = JSON.parse(JSON.stringify(req.body));
-    
-    if(tags.some(t => t.name.toLowerCase() === data.name.toLowerCase()))
-    {
+
+    if (tags.some(t => t.name.toLowerCase() === data.name.toLowerCase())) {
       res.status(400).send("Taki tag już istnieje!");
     }
 
@@ -122,15 +144,14 @@ app.get('/notes', async function (req: Request, res: Response) {
 
   if (data !== undefined && data !== null) {
 
-    const tab : string[] = data.toString().replace(/\r\n/g,'\n').split("\n");
-    const note : Note[] = [];
-    
-    for(let i = 0; i < tab.length; i++)
-    {
-        note[i] = JSON.parse(tab[i]);
+    const tab: string[] = data.toString().replace(/\r\n/g, '\n').split("\n");
+    const note: Note[] = [];
+
+    for (let i = 0; i < tab.length; i++) {
+      note[i] = JSON.parse(tab[i]);
     }
 
-    res.status(200).send("ID: " + note[0].id  + " Tytuł: " + note[0].title + " Zawartość: " + note[0].content );
+    res.status(200).send("ID: " + note[0].id + " Tytuł: " + note[0].title + " Zawartość: " + note[0].content);
   } else {
     res.sendStatus(404);
   }
@@ -143,15 +164,14 @@ app.get('/tags', async function (req: Request, res: Response) {
 
   if (data !== undefined && data !== null) {
 
-    const tab : string[] = data.toString().replace(/\r\n/g,'\n').split("\n");
-    const tag : Tag[] = [];
-    
-    for(let i = 0; i < tab.length; i++)
-    {
-        tag[i] = JSON.parse(tab[i]);
+    const tab: string[] = data.toString().replace(/\r\n/g, '\n').split("\n");
+    const tag: Tag[] = [];
+
+    for (let i = 0; i < tab.length; i++) {
+      tag[i] = JSON.parse(tab[i]);
     }
 
-    res.status(200).send("ID: " + tag[0].id  + " Nazwa tagu: " + tag[0].name);
+    res.status(200).send("ID: " + tag[0].id + " Nazwa tagu: " + tag[0].name);
   } else {
     res.sendStatus(404);
   }
@@ -170,16 +190,13 @@ app.put('/note/:id', function (req: Request, res: Response) {
 
     const data = JSON.parse(JSON.stringify(req.body));
 
-    if(data.title !== undefined && data.title !== null)
-    {
+    if (data.title !== undefined && data.title !== null) {
       notes[ind].title = data.title;
     }
-    if(data.content !== undefined && data.content !== null)
-    {
+    if (data.content !== undefined && data.content !== null) {
       notes[ind].content = data.content;
     }
-    if(data.tags !== undefined && data.tags !== null)
-    {
+    if (data.tags !== undefined && data.tags !== null) {
       notes[ind].tags = data.tags;
     }
 
