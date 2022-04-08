@@ -53,8 +53,7 @@ app.post('/note', async function (req: Request, res: Response) {
     if (req.body.title) {
       if (req.body.content) {
         const data = JSON.parse(JSON.stringify(req.body));
-        const notesData = await readStorage('data/notes.json');
-        const notesSaved: Note[] = JSON.parse(notesData);
+        const notesSaved: Note[] = JSON.parse(await readStorage('data/notes.json'));
 
         notesSaved.push({
           id: Date.now(),
@@ -83,8 +82,7 @@ app.post('/note', async function (req: Request, res: Response) {
 app.post('/tag', async function (req: Request, res: Response) {
   if (req.body && req.body.name) {
     const data = JSON.parse(JSON.stringify(req.body));
-    const tagsData = await readStorage('data/tags.json');
-    const tagsSaved: Tag[] = JSON.parse(tagsData);
+    const tagsSaved: Tag[] = JSON.parse(await readStorage('data/tags.json'));
 
     if (tagsSaved.some(t => t.name.toLowerCase() === data.name.toLowerCase())) {
       res.status(400).send("Taki tag już istnieje!");
@@ -144,12 +142,10 @@ app.post('/login', function (req: Request, res: Response) {
 
 // GET note by id if exists
 app.get('/note/:id', async function (req: Request, res: Response) {
-  const dataNotes = await readStorage('data/notes.json');
+  const notesSaved: Note[] = JSON.parse(await readStorage('data/notes.json'));
+  const ind = notesSaved.findIndex(n => n.id === +req.params.id);
 
-  if (dataNotes && req.params.id) {
-    const notesSaved: Note[] = JSON.parse(dataNotes);
-    const ind = notesSaved.findIndex(n => n.id === +req.params.id);
-
+  if (ind !== -1) {
     res.status(200).send("ID: " + notesSaved[ind].id + " Tytuł: " + notesSaved[ind].title + " Zawartość: " + notesSaved[ind].content + " Data utworzenia: " + notesSaved[ind].createDate + " Tagi: " + notesSaved[ind].tags);
   } else {
     res.sendStatus(404);
@@ -198,11 +194,10 @@ app.get('/tags', async function (req: Request, res: Response) {
 
 // EDIT note by id if exists
 app.put('/note/:id', async function (req: Request, res: Response) {
-  const dataSaved = await readStorage('data/notes.json');
+  const notesSaved: Note[] = JSON.parse(await readStorage('data/notes.json'));
+  const ind = notesSaved.findIndex(n => n.id === +req.params.id);
 
-  if (dataSaved && req.params.id) {
-    const notesSaved: Note[] = JSON.parse(dataSaved);
-    const ind = notesSaved.findIndex(n => n.id === +req.params.id);
+  if (req.body && ind !== -1) {
     const tempNote = {
       ...notesSaved[ind]
     };
