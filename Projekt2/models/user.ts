@@ -14,10 +14,4 @@ class User
         this.password = t.password;
         this.notesIDs = t.notesIDs;
     }
-
-   public IsAuthorized() : boolean {
-
-
-       return
-   } 
 }

@@ -6,7 +6,7 @@ import {
   Request,
   Response
 } from 'express'
-import * as myFunctions from '../services/storageService'
+import * as myStorageFunctions from '../services/storageService'
 import {
   Note
 } from '../models/note'
@@ -36,21 +36,39 @@ app.post('/note', async function (req: Request, res: Response) {
   if (req.body) {
     if (req.body.title) {
       if (req.body.content) {
-        const data = JSON.parse(JSON.stringify(req.body));
-        const notesSaved: Note[] = JSON.parse(await myFunctions.readStorage('data/notes.json'));
+        if (await myStorageFunctions.readStorage('data/notes.json')) {
+          const data = JSON.parse(JSON.stringify(req.body));
+          const notesSaved: Note[] = JSON.parse(await myStorageFunctions.readStorage('data/notes.json'));
 
-        notesSaved.push({
-          id: Date.now(),
-          title: data.title,
-          content: data.content,
-          createDate: new Date(),
-          tags: [data.tags]
-        });
+          notesSaved.push({
+            id: Date.now(),
+            title: data.title,
+            content: data.content,
+            createDate: new Date(),
+            tags: [data.tags]
+          });
 
-        const ind = notesSaved.findIndex(n => n.title === data.title);
-        myFunctions.updateStorage('data/notes.json', JSON.stringify(notesSaved))
+          const ind = notesSaved.findIndex(n => n.title === data.title);
+          myStorageFunctions.updateStorage('data/notes.json', JSON.stringify(notesSaved))
 
-        res.status(201).send("ID wprowadzonej notatki: " + notesSaved[ind].id);
+          res.status(201).send("ID wprowadzonej notatki: " + notesSaved[ind].id);
+        } else {
+          const data = JSON.parse(JSON.stringify(req.body));
+          const notesSaved: Note[] = [];
+
+          notesSaved.push({
+            id: Date.now(),
+            title: data.title,
+            content: data.content,
+            createDate: new Date(),
+            tags: [data.tags]
+          });
+
+          const ind = notesSaved.findIndex(n => n.title === data.title);
+          myStorageFunctions.updateStorage('data/notes.json', JSON.stringify(notesSaved))
+
+          res.status(201).send("ID wprowadzonej notatki: " + notesSaved[ind].id);
+        }
       } else {
         res.status(400).send("Wprowadzona notatka musi mieć zawartość!");
       }
@@ -65,57 +83,98 @@ app.post('/note', async function (req: Request, res: Response) {
 // POST tag
 app.post('/tag', async function (req: Request, res: Response) {
   if (req.body && req.body.name) {
-    const data = JSON.parse(JSON.stringify(req.body));
-    const tagsSaved: Tag[] = JSON.parse(await myFunctions.readStorage('data/tags.json'));
+    if (await myStorageFunctions.readStorage('data/notes.json')) {
+      const data = JSON.parse(JSON.stringify(req.body));
+      const tagsSaved: Tag[] = JSON.parse(await myStorageFunctions.readStorage('data/tags.json'));
 
-    if (tagsSaved.some(t => t.name.toLowerCase() === data.name.toLowerCase())) {
-      res.status(400).send("Taki tag już istnieje!");
+      if (tagsSaved.some(t => t.name.toLowerCase() === data.name.toLowerCase())) {
+        res.status(400).send("Taki tag już istnieje!");
+      }
+
+      tagsSaved.push({
+        id: Date.now(),
+        name: data.name
+      });
+
+      const ind = tagsSaved.findIndex(n => n.name.toLowerCase() === data.name.toLowerCase());
+      myStorageFunctions.updateStorage('data/tags.json', JSON.stringify(tagsSaved))
+
+
+      res.status(201).send("ID wprowadzonego tagu: " + tagsSaved[ind].id);
+    } else {
+      const data = JSON.parse(JSON.stringify(req.body));
+      const tagsSaved: Tag[] = [];
+
+      tagsSaved.push({
+        id: Date.now(),
+        name: data.name
+      });
+
+      const ind = tagsSaved.findIndex(n => n.name.toLowerCase() === data.name.toLowerCase());
+      myStorageFunctions.updateStorage('data/tags.json', JSON.stringify(tagsSaved))
+
+
+      res.status(201).send("ID wprowadzonego tagu: " + tagsSaved[ind].id);
     }
-
-    tagsSaved.push({
-      id: Date.now(),
-      name: data.name
-    });
-
-    const ind = tagsSaved.findIndex(n => n.name.toLowerCase() === data.name.toLowerCase());
-    myFunctions.updateStorage('data/tags.json', JSON.stringify(tagsSaved))
-
-
-    res.status(201).send("ID wprowadzonego tagu: " + tagsSaved[ind].id);
-
   } else {
     res.status(400).send("Tag musi mieć nazwę!");
   }
 })
 
 // POST login
-app.post('/login', function (req: Request, res: Response) {
+app.post('/login', async function (req: Request, res: Response) {
   console.log(req.body) // e.x. req.body.title 
 
   if (req.body) {
-    const data = JSON.parse(JSON.stringify(req.body));
+    if (req.body.login) {
+      if (req.body.password) {
+        if (await myStorageFunctions.readStorage('data/users.json')) {
+          const data = JSON.parse(JSON.stringify(req.body));
+          const usersSaved: User[] = JSON.parse(await myStorageFunctions.readStorage('data/users.json'));
+          const userCurrent = {
+            id: Date.now(),
+            login: data.login,
+            password: data.password,
+            notesIDs: [data.notesIDs]
+          }
 
-    if (req.headers.authorization !== null && req.headers.authorization !== undefined) {
-      const user = {
-        id: Date.now(),
-        login: data.login,
-        password: data.password
-      };
+          if (!usersSaved.some(u => u.login === userCurrent.login && u.password === userCurrent.password)) {
+            usersSaved.push(userCurrent);
+            myStorageFunctions.updateStorage('data/users.json', JSON.stringify(usersSaved));
+          }
 
-      const token = jwt.sign(req.headers.authorization, secret);
-      const payload = jwt.verify(token, secret);
+          const payload = userCurrent.id.toString();
+          const token = jwt.sign(payload, secret);
 
-      if (req.headers.authorization === payload) {
-        res.status(200).send("Bearer " + token);
+          res.status(200).send("Bearer " + token);
+        } else {
+          const data = JSON.parse(JSON.stringify(req.body));
+          const usersSaved: User[] = [];
+          const userCurrent = {
+            id: Date.now(),
+            login: data.login,
+            password: data.password,
+            notesIDs: [data.notesIDs]
+          }
 
+          if (!usersSaved.some(u => u.login === userCurrent.login && u.password === userCurrent.password)) {
+            usersSaved.push(userCurrent);
+            myStorageFunctions.updateStorage('data/users.json', JSON.stringify(usersSaved));
+          }
+
+          const payload = userCurrent.id.toString();
+          const token = jwt.sign(payload, secret);
+
+          res.status(200).send("Bearer " + token);
+        }
       } else {
-        res.status(401).send("Wystąpił błąd!");
+        res.status(401).send("Należy podać hasło!");
       }
-
-      res.status(200).send("Bearer " + token);
+    } else {
+      res.status(401).send("Należy podać login!");
     }
   } else {
-    res.status(401).send("Wystąpił błąd!");
+    res.status(401).send("Wystąpił błąd podczas logowania!");
   }
 
 })
@@ -126,7 +185,7 @@ app.post('/login', function (req: Request, res: Response) {
 
 // GET note by id if exists
 app.get('/note/:id', async function (req: Request, res: Response) {
-  const notesSaved: Note[] = JSON.parse(await myFunctions.readStorage('data/notes.json'));
+  const notesSaved: Note[] = JSON.parse(await myStorageFunctions.readStorage('data/notes.json'));
   const ind = notesSaved.findIndex(n => n.id === +req.params.id);
 
   if (ind !== -1) {
@@ -138,7 +197,7 @@ app.get('/note/:id', async function (req: Request, res: Response) {
 
 // GET list of existing notes if there is any
 app.get('/notes', async function (req: Request, res: Response) {
-  const dataNotes = await myFunctions.readStorage('data/notes.json');
+  const dataNotes = await myStorageFunctions.readStorage('data/notes.json');
 
   if (dataNotes) {
     const notesSaved: Note[] = JSON.parse(dataNotes);
@@ -156,7 +215,7 @@ app.get('/notes', async function (req: Request, res: Response) {
 
 // GET list of existing tags if there is any
 app.get('/tags', async function (req: Request, res: Response) {
-  const dataTags = await myFunctions.readStorage('data/tags.json');
+  const dataTags = await myStorageFunctions.readStorage('data/tags.json');
 
   if (dataTags) {
     const tagsSaved: Tag[] = JSON.parse(dataTags);
@@ -178,7 +237,7 @@ app.get('/tags', async function (req: Request, res: Response) {
 
 // EDIT note by id if exists
 app.put('/note/:id', async function (req: Request, res: Response) {
-  const notesSaved: Note[] = JSON.parse(await myFunctions.readStorage('data/notes.json'));
+  const notesSaved: Note[] = JSON.parse(await myStorageFunctions.readStorage('data/notes.json'));
   const ind = notesSaved.findIndex(n => n.id === +req.params.id);
 
   if (req.body && ind !== -1) {
@@ -203,7 +262,7 @@ app.put('/note/:id', async function (req: Request, res: Response) {
       res.status(400).send("Błędnie wprowadzone tagi!");
     }
 
-    myFunctions.updateStorage('data/notes.json', JSON.stringify(notesSaved))
+    myStorageFunctions.updateStorage('data/notes.json', JSON.stringify(notesSaved))
     const printOld = 'Notatka przed edycją: ID: ' + tempNote.id + ' Tytuł: ' + tempNote.title + ' Zawartość: ' + tempNote.content + ' Data utworzenia: ' + tempNote.createDate + ' Tagi: ' + tempNote.tags + '\n';
     const printNew = 'Notatka po edycji: ID: ' + notesSaved[ind].id + ' Tytuł: ' + notesSaved[ind].title + ' Zawartość: ' + notesSaved[ind].content + ' Data utworzenia: ' + notesSaved[ind].createDate + ' Tagi: ' + notesSaved[ind].tags;
 
@@ -219,7 +278,7 @@ app.put('/note/:id', async function (req: Request, res: Response) {
 
 // DEL note by id if exists
 app.delete('/note/:id', async function (req: Request, res: Response) {
-  const dataSaved = await myFunctions.readStorage('data/notes.json');
+  const dataSaved = await myStorageFunctions.readStorage('data/notes.json');
 
   if (dataSaved && req.params.id) {
     const notesSaved: Note[] = JSON.parse(dataSaved);
@@ -227,7 +286,7 @@ app.delete('/note/:id', async function (req: Request, res: Response) {
 
     if (ind !== -1) {
       notesSaved.splice(ind, 1);
-      myFunctions.updateStorage('data/notes.json', JSON.stringify(notesSaved))
+      myStorageFunctions.updateStorage('data/notes.json', JSON.stringify(notesSaved))
     }
 
     res.status(204);
