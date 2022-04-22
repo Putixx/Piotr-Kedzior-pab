@@ -10,6 +10,7 @@ class Note
     title:string;
     content:string;
     createDate?:Date;
+    isPrivate?:boolean;
     tags?:Tag[];
 
     constructor(nt : Note)
@@ -18,6 +19,7 @@ class Note
         this.title = nt.title;
         this.content = nt.content;
         this.createDate = nt.createDate;
+        this.isPrivate = nt.isPrivate ?? false;
         this.tags = nt.tags;
     }
 }
