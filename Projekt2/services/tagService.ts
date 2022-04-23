@@ -1,12 +1,9 @@
 /* IMPORT BEG */
 
 import {
-  readStorage,
-  updateStorage
-} from '../services/storageService'
-import {
   Tag
 } from '../models/tag'
+import { User } from '../models/user';
 
 /* IMPORT END */
 
@@ -20,22 +17,33 @@ export {
 /* EXPORT END */
 
 // adds new tag to storage file
-async function addNewTag(data: any): Promise < void > {
-  const tagsSaved: Tag[] = JSON.parse(await readStorage('data/tags.json')) ?? [];
+async function addNewTag(data: any, userID: any, storageOption: any): Promise < void > {
+  const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+  const ind = usersSaved.findIndex(u => u.id === userID);
 
-  tagsSaved.push({
-    id: Date.now(),
-    name: data.name
-  });
-  updateStorage('data/tags.json', JSON.stringify(tagsSaved))
+    const tag: Tag = ({
+        id: Date.now(),
+        name: data.name
+    });
+
+    usersSaved[ind].tags.push(tag);
+    storageOption.updateStorage(usersSaved);
 }
 
 // checks if given tag already exists
-async function tagExists(data: any): Promise < boolean > {
-  const tagsSaved: Tag[] = JSON.parse(await readStorage('data/tags.json')) ?? [];
+async function tagExists(data: any, storageOption: any): Promise < boolean > {
+  const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+  let isInArray = false;
 
-  if (tagsSaved.some(t => t.name.toLowerCase() === data.name.toLowerCase())) {
-    return true;
+  for(let i = 0; i < usersSaved.length; i++)
+  {
+    for(let j = 0; j < usersSaved[i].tags.length; j++)
+    {
+      if(usersSaved[i].tags[j].name.toLocaleLowerCase() === data.name.toLowerCase()) {
+        isInArray = true;
+      }
+    }
   }
-  return false;
+  
+  return isInArray;
 }

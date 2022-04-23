@@ -2,10 +2,6 @@
 
 import jwt from 'jsonwebtoken'
 import {
-    readStorage,
-    updateStorage
-} from '../services/storageService'
-import {
     User
 } from '../models/user'
 
@@ -22,8 +18,9 @@ export {
 /* EXPORT END */
 
 // checks if user is already in storage file
-async function isRegistered(data: any): Promise < boolean > {
-    const usersSaved: User[] = JSON.parse(await readStorage('data/users.json'));
+async function isRegistered(data: any, storageOption: any): Promise < boolean > {
+    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+
     if (usersSaved.some(u => u.login === data.login && u.password === data.password)) {
         return true;
     } else {
@@ -32,30 +29,29 @@ async function isRegistered(data: any): Promise < boolean > {
 }
 
 // adds new user to storage file
-async function addNewUser(data: any): Promise < void > {
-    const usersSaved: User[] = JSON.parse(await readStorage('data/users.json')) ?? [];
+async function addNewUser(data: any, storageOption: any): Promise < void > {
+    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
 
     const userCurrent = {
         id: Date.now(),
         login: data.login,
         password: data.password,
-        notesIDs: [data.notesIDs],
-        tagsIDs: [data.tagsIDs]
+        notes: [data.notes],
+        tags: [data.tags]
     }
     usersSaved.push(userCurrent);
-    updateStorage('data/users.json', JSON.stringify(usersSaved));
-
+    storageOption.updateStorage(usersSaved);
 }
 
 //gets newly added user id
-async function getNewUserID(data: any): Promise < number > {
-    const usersSaved: User[] = JSON.parse(await readStorage('data/users.json'));
+async function getNewUserID(data: any, storageOption: any): Promise < number > {
+    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
     return usersSaved.findIndex(u => u.login === data.login && u.password === data.password)
 }
 
 //authorize logged user
-async function authLoggedUser(data: any, secret: string): Promise < string > {
-    const id = getNewUserID(data);
+async function authLoggedUser(data: any, secret: string, storageOption: any): Promise < string > {
+    const id = getNewUserID(data, storageOption);
     const payload = id.toString() ?? ''
     const token = jwt.sign(payload, secret);
     return 'Bearer ' + token;

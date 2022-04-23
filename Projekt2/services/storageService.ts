@@ -1,20 +1,56 @@
+/* IMPORT BEG */
+
 import fs from 'fs';
-export {readStorage, updateStorage};
+import {
+    User
+} from '../models/user'
+import mongoose from 'mongoose'
 
-/* FILE ASYNC READ/WRITE BEG */
+/* IMPORT END */
 
-// FILE ASYNC READ
-async function readStorage(storeFile: string): Promise < string > {
-    return fs.promises.readFile(storeFile, 'utf-8');
-  }
-  
-  // FILE ASYNC WRITE
-  async function updateStorage(storeFile: string, dataToSave: string): Promise < void > {
-    try {
-      await fs.promises.writeFile(storeFile, dataToSave);
-    } catch (err) {
-      console.log(err)
+mongoose.connect('mongodb://localhost:27017')
+
+const userSchema = new mongoose.Schema({
+    login: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    notes: [],
+    tags: []
+})
+const userCollection = mongoose.model('Users', userSchema)
+
+
+interface DataStorage {
+    readStorage(): Promise < String >
+        updateStorage(data: User[]): Promise < void >
+}
+
+export class DatabaseStorage implements DataStorage {
+
+    async readStorage(): Promise < String > {
+        let data = await userCollection.find()
+        return JSON.stringify(data)
     }
-  }
-  
-  /* FILE ASYNC READ/WRITE END */
+    async updateStorage(data: User[]): Promise < void > {
+        await userCollection.deleteMany()
+        await userCollection.insertMany(data)
+    }
+}
+
+export class FileSystemStorage implements DataStorage {
+    async readStorage(): Promise < string > {
+        return await fs.promises.readFile('./data/users.json', 'utf-8');
+    }
+    async updateStorage(data: User[]): Promise < void > {
+        try {
+            await fs.promises.writeFile('./data/users.json', JSON.stringify(data));
+        } catch (err) {
+            console.log(err)
+        }
+    }
+}

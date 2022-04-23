@@ -1,12 +1,9 @@
 /* IMPORT BEG */
 
 import {
-    readStorage,
-    updateStorage
-} from '../services/storageService'
-import {
     Note
 } from '../models/note'
+import { User } from '../models/user';
 
 /* IMPORT END */
 
@@ -14,16 +11,17 @@ import {
 
 export {
     addNewNote,
-    editNote
+    //editNote
 };
 
 /* EXPORT END */
 
 // adds new note to storage file
-async function addNewNote(data: any): Promise < void > {
-    const notesSaved: Note[] = JSON.parse(await readStorage('data/notes.json')) ?? [];
+async function addNewNote(data: any, userID: any, storageOption: any): Promise < void > {
+    const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
+    const ind = usersSaved.findIndex(u => u.id === userID);
 
-    notesSaved.push({
+    const note: Note = ({
         id: Date.now(),
         title: data.title,
         content: data.content,
@@ -31,31 +29,33 @@ async function addNewNote(data: any): Promise < void > {
         isPrivate: data.isPrivate,
         tags: [data.tags]
     });
-    updateStorage('data/notes.json', JSON.stringify(notesSaved))
+
+    usersSaved[ind].notes.push(note);
+    storageOption.updateStorage(usersSaved);
 }
 
 // edits existing note in storage file
-function editNote(ind: number, dataNew: any, notesSaved: Note[]): string {
-    if (ind !== -1) {
-        const tempNote = {
-            ...notesSaved[ind]
-        };
+// function editNote(noteID: number, userID: any, dataNew: any, notesSaved: Note[], storageOption: any): string {
+//     if (noteID !== -1) {
+//         const tempNote = {
+//             ...notesSaved[noteID]
+//         };
 
-        if (dataNew.title) {
-            notesSaved[ind].title = dataNew.title;
-        }
-        if (dataNew.content) {
-            notesSaved[ind].content = dataNew.content;
-        }
-        if (dataNew.tags) {
-            notesSaved[ind].tags = dataNew.tags;
-        }
+//         if (dataNew.title) {
+//             notesSaved[ind].title = dataNew.title;
+//         }
+//         if (dataNew.content) {
+//             notesSaved[ind].content = dataNew.content;
+//         }
+//         if (dataNew.tags) {
+//             notesSaved[ind].tags = dataNew.tags;
+//         }
 
-        updateStorage('data/notes.json', JSON.stringify(notesSaved))
-        const printOld = 'Notatka przed edycją: ID: ' + tempNote.id + ' Tytuł: ' + tempNote.title + ' Zawartość: ' + tempNote.content + ' Data utworzenia: ' + tempNote.createDate + ' Tagi: ' + tempNote.tags + '\n';
-        const printNew = 'Notatka po edycji: ID: ' + notesSaved[ind].id + ' Tytuł: ' + notesSaved[ind].title + ' Zawartość: ' + notesSaved[ind].content + ' Data utworzenia: ' + notesSaved[ind].createDate + ' Tagi: ' + notesSaved[ind].tags;
-        return printOld + printNew;
-    } else {
-        return '';
-    }
-}
+//         storageOption.updateStorage('data/notes.json', JSON.stringify(notesSaved))
+//         const printOld = 'Notatka przed edycją: ID: ' + tempNote.id + ' Tytuł: ' + tempNote.title + ' Zawartość: ' + tempNote.content + ' Data utworzenia: ' + tempNote.createDate + ' Tagi: ' + tempNote.tags + '\n';
+//         const printNew = 'Notatka po edycji: ID: ' + notesSaved[ind].id + ' Tytuł: ' + notesSaved[ind].title + ' Zawartość: ' + notesSaved[ind].content + ' Data utworzenia: ' + notesSaved[ind].createDate + ' Tagi: ' + notesSaved[ind].tags;
+//         return printOld + printNew;
+//     } else {
+//         return '';
+//     }
+// }

@@ -13,15 +13,15 @@ class User
     id?:number;
     login:string;
     password:string;
-    notesIDs:Note[];
-    tagsIDs:Tag[];
+    notes:Note[];
+    tags:Tag[];
 
     constructor(t : User)
     {
         this.id = t.id;
         this.login = t.login;
         this.password = t.password;
-        this.notesIDs = t.notesIDs;
-        this.tagsIDs = t.tagsIDs;
+        this.notes = t.notes;
+        this.tags = t.tags;
     }
 }

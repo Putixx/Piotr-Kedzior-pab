@@ -8,12 +8,8 @@ import {
   NextFunction
 } from 'express'
 import {
-  readStorage,
-  updateStorage
-} from '../services/storageService'
-import {
-  addNewNote,
-  editNote
+  addNewNote
+  //editNote
 } from '../services/noteService'
 import {
   addNewTag,
@@ -33,6 +29,7 @@ import {
 import {
   User
 } from '../models/user'
+import {FileSystemStorage, DatabaseStorage} from '../services/storageService'
 
 /* IMPORT END */
 
@@ -41,6 +38,18 @@ import {
 const app = express();
 app.use(express.json())
 const secret = 'abcdef';
+let storageOption: FileSystemStorage | DatabaseStorage;
+
+function storageO(): void {
+  const config = import('./myConfig.json')
+  if(JSON.stringify(config).includes('true')) {
+    storageOption = new DatabaseStorage()
+}
+  else {
+    storageOption = new FileSystemStorage()
+  }
+}
+
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(' ')[1] ?? ''
@@ -48,9 +57,9 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     return res.sendStatus(401)
   }
 
-  if (await readStorage('data/users.json')) {
+  if (await storageOption.readStorage()) {
     const payload = jwt.verify(token, secret)
-    const usersSaved: User[] = JSON.parse(await readStorage('data/users.json'));
+    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
     if (usersSaved.some(u => u.id?.toString() === payload)) {
       next()
     } else {
@@ -63,8 +72,29 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 
 /* POST BEG */
 
+// POST login
+app.post('/login', async function (req: Request, res: Response) {
+  storageO();
+
+  if (!req.body) {
+    res.status(401).send("Wystąpił błąd podczas logowania!");
+  }
+  if (!req.body.login) {
+    res.status(401).send("Należy podać login!");
+  }
+  if (!req.body.password) {
+    res.status(401).send("Należy podać hasło!");
+  }
+  const data = JSON.parse(JSON.stringify(req.body));
+    if(!await isRegistered(data, storageOption)) {
+      await addNewUser(data, storageOption);
+    }
+    
+    res.status(200).send(authLoggedUser(data, secret, storageOption));
+})
+
 // POST note
-app.post('/note', auth, async function (req: Request, res: Response) {
+app.post('/login/note', auth, async function (req: Request, res: Response) {
 
   if (!req.body) {
     res.status(400).send("Błędnie wprowadzone wartości!");
@@ -77,50 +107,29 @@ app.post('/note', auth, async function (req: Request, res: Response) {
   if (!req.body.content) {
     res.status(400).send("Wprowadzona notatka musi mieć zawartość!");
   }
-
+    const token = req.headers.authorization?.split(' ')[1] ?? ''
+    const userID = jwt.verify(token, secret)
     const data = JSON.parse(JSON.stringify(req.body));
-    await addNewNote(data);
+    await addNewNote(data, userID, storageOption);
     
     res.status(201).send("ID wprowadzonej notatki: " + data.id);
 })
 
 // POST tag
-app.post('/tag', auth, async function (req: Request, res: Response) {
+app.post('/login/tag', auth, async function (req: Request, res: Response) {
   if (!req.body && req.body.name) {
     res.status(400).send("Tag musi mieć nazwę!");
   }
     const data = JSON.parse(JSON.stringify(req.body));
     
-    if(await tagExists(data)) {
+    if(await tagExists(data, storageOption)) {
       res.status(400).send("Taki tag już istnieje!");
     }
+    const token = req.headers.authorization?.split(' ')[1] ?? ''
+    const userID = jwt.verify(token, secret)
+    await addNewTag(data, userID, storageOption);
 
-    await addNewTag(data);
-
-    res.status(201).send("ID wprowadzonego tagu: " + data.id);
-  
-})
-
-// POST login
-app.post('/login', async function (req: Request, res: Response) {
-
-  if (!req.body) {
-    res.status(401).send("Wystąpił błąd podczas logowania!");
-  }
-  if (req.body.login) {
-    res.status(401).send("Należy podać login!");
-  }
-  if (req.body.password) {
-    res.status(401).send("Należy podać hasło!");
-  }
-
-  const data = JSON.parse(JSON.stringify(req.body));
-    
-    if(!await isRegistered(data)) {
-      await addNewUser(data);
-    }
-    
-    res.status(200).send(authLoggedUser(data, secret));
+    res.status(201).send("Wprowadzono nowy tag o nazwie: " + data.name);
 })
 
 /* POST END */
@@ -128,21 +137,24 @@ app.post('/login', async function (req: Request, res: Response) {
 /* GET BEG */
 
 // GET note by id if exists
-app.get('/note/:id', auth, async function (req: Request, res: Response) {
-  const notesSaved: Note[] = JSON.parse(await readStorage('data/notes.json'));
-  const ind = notesSaved.findIndex(n => n.id === +req.params.id);
-
-  if (ind !== -1) {
-    res.status(200).send("ID: " + notesSaved[ind].id + " Tytuł: " + notesSaved[ind].title + " Zawartość: " + notesSaved[ind].content + " Data utworzenia: " + notesSaved[ind].createDate + " Tagi: " + notesSaved[ind].tags);
+app.get('/login/note/:id', auth, async function (req: Request, res: Response) {
+  const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+  const token = req.headers.authorization?.split(' ')[1] ?? ''
+  const userID = jwt.verify(token, secret)
+  const userIndex = usersSaved.findIndex(u => u.id?.toString() === userID);
+  const noteIndex = usersSaved[userIndex].notes.findIndex(n => n.id === +req.params.id);
+  
+  if (noteIndex !== -1 && userIndex !== -1) {
+    res.status(200).send("ID: " + usersSaved[userIndex].notes[noteIndex].id + " Tytuł: " + usersSaved[userIndex].notes[noteIndex].title + " Zawartość: " + usersSaved[userIndex].notes[noteIndex].content + " Data utworzenia: " + usersSaved[userIndex].notes[noteIndex].createDate + " Tagi: " + usersSaved[userIndex].notes[noteIndex].tags);
   } else {
     res.sendStatus(404);
   }
 })
 
 // GET list of existing notes if there is any
-app.get('/notes', auth, async function (req: Request, res: Response) {
-  if (await readStorage('data/notes.json')) {
-    const notesSaved: Note[] = JSON.parse(await readStorage('data/notes.json'));
+app.get('/login/notes', auth, async function (req: Request, res: Response) {
+  if (await storageOption.readStorage()) {
+    const notesSaved: Note[] = JSON.parse((await storageOption.readStorage()).toString());
 
     let print = '';
     for (let i = 0; i < notesSaved.length; i++) {
@@ -157,8 +169,8 @@ app.get('/notes', auth, async function (req: Request, res: Response) {
 
 // GET list of existing tags if there is any
 app.get('/tags', auth, async function (req: Request, res: Response) {
-  if (await readStorage('data/tags.json')) {
-    const tagsSaved: Tag[] = JSON.parse(await readStorage('data/tags.json'));
+  if (await storageOption.readStorage()) {
+    const tagsSaved: Tag[] = JSON.parse((await storageOption.readStorage()).toString());
 
     let print = '';
     for (let i = 0; i < tagsSaved.length; i++) {
@@ -176,53 +188,53 @@ app.get('/tags', auth, async function (req: Request, res: Response) {
 /* PUT BEG */
 
 // EDIT note by id if exists
-app.put('/note/:id', auth, async function (req: Request, res: Response) {
-  const dataNew = JSON.parse(JSON.stringify(req.body));
+// app.put('/note/:id', auth, async function (req: Request, res: Response) {
+//   const dataNew = JSON.parse(JSON.stringify(req.body));
 
-  if(!dataNew.title) {
-    res.status(400).send("Błędnie wprowadzony tytuł!");
-  }
-  if(!dataNew.content) {
-    res.status(400).send("Błędnie wprowadzona zawartość!");
-  }
-  if(!dataNew.tags) {
-    res.status(400).send("Błędnie wprowadzone tagi!");
-  }
+//   if(!dataNew.title) {
+//     res.status(400).send("Błędnie wprowadzony tytuł!");
+//   }
+//   if(!dataNew.content) {
+//     res.status(400).send("Błędnie wprowadzona zawartość!");
+//   }
+//   if(!dataNew.tags) {
+//     res.status(400).send("Błędnie wprowadzone tagi!");
+//   }
 
-  const notesSaved: Note[] = JSON.parse(await readStorage('data/notes.json'));
-  const ind = notesSaved.findIndex(n => n.id === +req.params.id);
+//   const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+//   const ind = usersSaved.findIndex(n => n.notes.id === +req.params.id);
 
-  if(ind === -1) {
-    res.status(400).send("Błędnie wprowadzone ID!");
-  }
+//   if(ind === -1) {
+//     res.status(400).send("Błędnie wprowadzone ID!");
+//   }
 
-  const print = editNote(ind, dataNew, notesSaved);
+//   const print = editNote(ind, dataNew, notesSaved, storageOption);
 
-  res.status(200).send(print);
-})
+//   res.status(200).send(print);
+// })
 
 /* PUT END */
 
 /* DEL BEG */
 
 // DEL note by id if exists
-app.delete('/note/:id', auth, async function (req: Request, res: Response) {
-  const dataSaved = await readStorage('data/notes.json');
+// app.delete('/note/:id', auth, async function (req: Request, res: Response) {
+//   const dataSaved = await storageOption.readStorage();
 
-  if (dataSaved && req.params.id) {
-    const notesSaved: Note[] = JSON.parse(dataSaved);
-    const ind = notesSaved.findIndex(n => n.id === +req.params.id);
+//   if (dataSaved && req.params.id) {
+//     const notesSaved: Note[] = JSON.parse(dataSaved.toString());
+//     const ind = notesSaved.findIndex(n => n.id === +req.params.id);
 
-    if (ind !== -1) {
-      notesSaved.splice(ind, 1);
-      updateStorage('data/notes.json', JSON.stringify(notesSaved))
-    }
+//     if (ind !== -1) {
+//       notesSaved.splice(ind, 1);
+//       storageOption.updateStorage()
+//     }
 
-    res.status(204);
-  } else {
-    res.status(400).send("Taka notatka nie istnieje!");
-  }
-})
+//     res.status(204);
+//   } else {
+//     res.status(400).send("Taka notatka nie istnieje!");
+//   }
+// })
 
 /* DEL END */
 
