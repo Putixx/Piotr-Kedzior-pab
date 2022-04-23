@@ -21,7 +21,7 @@ class User
         this.id = t.id;
         this.login = t.login;
         this.password = t.password;
-        this.notes = t.notes;
-        this.tags = t.tags;
+        this.notes = t.notes ?? [];
+        this.tags = t.tags ?? [];
     }
 }
