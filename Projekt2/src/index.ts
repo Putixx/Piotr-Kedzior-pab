@@ -59,7 +59,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 
   if (await storageOption.readStorage()) {
     const payload = jwt.verify(token, secret)
-    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+    const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
     if (usersSaved.some(u => u.id?.toString() === payload)) {
       next()
     } else {
@@ -75,6 +75,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 // POST login
 app.post('/login', async function (req: Request, res: Response) {
   storageO();
+  console.log(storageOption)
 
   if (!req.body) {
     res.status(401).send("Wystąpił błąd podczas logowania!");
@@ -138,7 +139,7 @@ app.post('/login/tag', auth, async function (req: Request, res: Response) {
 
 // GET note by id if exists
 app.get('/login/note/:id', auth, async function (req: Request, res: Response) {
-  const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+  const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
   const token = req.headers.authorization?.split(' ')[1] ?? ''
   const userID = jwt.verify(token, secret)
   const userIndex = usersSaved.findIndex(u => u.id?.toString() === userID);
@@ -154,7 +155,7 @@ app.get('/login/note/:id', auth, async function (req: Request, res: Response) {
 // GET list of existing notes if there is any
 app.get('/login/notes', auth, async function (req: Request, res: Response) {
   if (await storageOption.readStorage()) {
-    const notesSaved: Note[] = JSON.parse((await storageOption.readStorage()).toString());
+    const notesSaved: Note[] = JSON.parse(await storageOption.readStorage());
 
     let print = '';
     for (let i = 0; i < notesSaved.length; i++) {
@@ -170,7 +171,7 @@ app.get('/login/notes', auth, async function (req: Request, res: Response) {
 // GET list of existing tags if there is any
 app.get('/tags', auth, async function (req: Request, res: Response) {
   if (await storageOption.readStorage()) {
-    const tagsSaved: Tag[] = JSON.parse((await storageOption.readStorage()).toString());
+    const tagsSaved: Tag[] = JSON.parse(await storageOption.readStorage());
 
     let print = '';
     for (let i = 0; i < tagsSaved.length; i++) {

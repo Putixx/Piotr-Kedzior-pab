@@ -18,7 +18,7 @@ export {
 
 // adds new tag to storage file
 async function addNewTag(data: any, userID: any, storageOption: any): Promise < void > {
-  const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+  const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
   const ind = usersSaved.findIndex(u => u.id === userID);
 
     const tag: Tag = ({
@@ -32,7 +32,7 @@ async function addNewTag(data: any, userID: any, storageOption: any): Promise < 
 
 // checks if given tag already exists
 async function tagExists(data: any, storageOption: any): Promise < boolean > {
-  const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+  const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
   let isInArray = false;
 
   for(let i = 0; i < usersSaved.length; i++)

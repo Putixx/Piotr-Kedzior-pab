@@ -19,8 +19,9 @@ export {
 
 // checks if user is already in storage file
 async function isRegistered(data: any, storageOption: any): Promise < boolean > {
-    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
-
+    const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
+    console.log(usersSaved)
+    
     if (usersSaved.some(u => u.login === data.login && u.password === data.password)) {
         return true;
     } else {
@@ -30,7 +31,7 @@ async function isRegistered(data: any, storageOption: any): Promise < boolean > 
 
 // adds new user to storage file
 async function addNewUser(data: any, storageOption: any): Promise < void > {
-    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+    const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
 
     const userCurrent = {
         id: Date.now(),
@@ -45,7 +46,7 @@ async function addNewUser(data: any, storageOption: any): Promise < void > {
 
 //gets newly added user id
 async function getNewUserID(data: any, storageOption: any): Promise < number > {
-    const usersSaved: User[] = JSON.parse((await storageOption.readStorage()).toString());
+    const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
     return usersSaved.findIndex(u => u.login === data.login && u.password === data.password)
 }
 

@@ -8,7 +8,7 @@ import mongoose from 'mongoose'
 
 /* IMPORT END */
 
-mongoose.connect('mongodb://localhost:27017')
+//mongoose.connect('mongodb://localhost:27017')
 
 const userSchema = new mongoose.Schema({
     login: {
@@ -26,15 +26,14 @@ const userCollection = mongoose.model('Users', userSchema)
 
 
 interface DataStorage {
-    readStorage(): Promise < String >
+    readStorage(): Promise < string >
         updateStorage(data: User[]): Promise < void >
 }
 
 export class DatabaseStorage implements DataStorage {
 
-    async readStorage(): Promise < String > {
-        let data = await userCollection.find()
-        return JSON.stringify(data)
+    async readStorage(): Promise < string > {
+        return JSON.stringify(await userCollection.find())
     }
     async updateStorage(data: User[]): Promise < void > {
         await userCollection.deleteMany()
@@ -44,6 +43,7 @@ export class DatabaseStorage implements DataStorage {
 
 export class FileSystemStorage implements DataStorage {
     async readStorage(): Promise < string > {
+        console.log('reading')
         return await fs.promises.readFile('./data/users.json', 'utf-8');
     }
     async updateStorage(data: User[]): Promise < void > {
