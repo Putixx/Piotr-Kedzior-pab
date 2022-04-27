@@ -20,6 +20,6 @@ class Note
         this.content = nt.content;
         this.createDate = nt.createDate;
         this.isPrivate = nt.isPrivate ?? false;
-        this.tags = nt.tags;
+        this.tags = nt.tags ?? [];
     }
 }

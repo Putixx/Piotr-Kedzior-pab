@@ -43,7 +43,6 @@ export class DatabaseStorage implements DataStorage {
 
 export class FileSystemStorage implements DataStorage {
     async readStorage(): Promise < string > {
-        console.log('reading')
         return await fs.promises.readFile('./data/users.json', 'utf-8');
     }
     async updateStorage(data: User[]): Promise < void > {
