@@ -5,7 +5,7 @@ class Restaurant
 {
     id?:number;
     name:string;
-    adress:string;
+    address:string;
     phone:string;
     nip:string;
     email:string;
@@ -15,7 +15,7 @@ class Restaurant
     {
         this.id = t.id ?? Date.now();
         this.name = t.name;
-        this.adress = t.adress;
+        this.address = t.address;
         this.phone = t.phone;
         this.nip = t.nip;
         this.email = t.email;

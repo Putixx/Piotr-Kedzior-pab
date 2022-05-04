@@ -1,29 +1,37 @@
-/* IMPORT BEG */
+/* IMPORT */
 
 import express from "express";
 import { Request, Response } from "express";
 
-/* IMPORT END */
-
-/* SETUP BEG */
+/* SETUP */
 
 const app = express();
 app.use(express.json());
 
-/* SETUP END */
+/* POST */
 
-/* POST BEG */
-
-// POST login
-app.post("/", async function (req: Request, res: Response) {
+// POST register new restaurant
+app.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(401).send("Wystąpił błąd podczas logowania!");
+    res.status(401).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
   }
-  if (!req.body.login) {
-    res.status(401).send("Należy podać login!");
+  if (!req.body.name) {
+    res.status(401).send("Name is missing!");
   }
-  if (!req.body.password) {
-    res.status(401).send("Należy podać hasło!");
+  if (!req.body.address) {
+    res.status(401).send("Address is missing!");
+  }
+  if (!req.body.phone) {
+    res.status(401).send("Phone number is missing!");
+  }
+  if (!req.body.nip) {
+    res.status(401).send("NIP number is missing!");
+  }
+  if (!req.body.email) {
+    res.status(401).send("E-mail is missing!");
+  }
+  if (!req.body.www) {
+    res.status(401).send("Website url is missing!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
