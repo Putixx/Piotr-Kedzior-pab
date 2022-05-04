@@ -161,7 +161,33 @@ app.put("/restaurant/:id", async function (req: Request, res: Response) {
   + " Address: " + savedRestaurants[restaurantIndex].address + " Phone: " + savedRestaurants[restaurantIndex].phone 
   + " NIP: " + savedRestaurants[restaurantIndex].nip + " E-mail: " + savedRestaurants[restaurantIndex].email + " Website: " + savedRestaurants[restaurantIndex].www + "\n";
 
+  await updateStorage('../data/restaurants.json', JSON.stringify(savedRestaurants));
   res.status(201).send("Restaurant before edit: " + printOld + " Restaurant after edit: " + printNew);
+});
+
+/* DELETE */
+
+// DELETE registered restaurants of same name
+app.delete("/restaurant/:id", async function (req: Request, res: Response) {
+  if (!req.params.id) {
+    res.status(400).send("You need to send ID!");
+  }
+  
+  const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
+
+  if(savedRestaurants.length < 1) {
+    res.status(400).send("There is no restaurants!");
+  }
+
+  const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.name)
+
+  if(restaurantIndex === -1) {
+    res.status(400).send("Wrong ID!");
+  }
+
+  savedRestaurants.splice(restaurantIndex, 1);
+  await updateStorage('../data/restaurants.json', JSON.stringify(savedRestaurants));
+  res.status(201).send("Restaurant successfuly removed!");
 });
 
 app.listen(3000);
