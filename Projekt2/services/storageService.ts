@@ -7,8 +7,7 @@ import {
 import mongoose from 'mongoose'
 
 /* IMPORT END */
-
-//mongoose.connect('mongodb://localhost:27017')
+//mongoose.connect('mongodb://127.0.0.1:27017')
 
 const userSchema = new mongoose.Schema({
     login: {

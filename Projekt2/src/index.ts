@@ -207,7 +207,7 @@ app.get('/login/notes', auth, async function (req: Request, res: Response) {
 })
 
 // GET list of existing tags if there is any
-app.get('/tags', auth, async function (req: Request, res: Response) {
+app.get('/login/tags', auth, async function (req: Request, res: Response) {
   if (await storageOption.readStorage()) {
     const usersSaved: User[] = JSON.parse(await storageOption.readStorage());
     const token = req.headers.authorization?.split(' ')[1] ?? ''
