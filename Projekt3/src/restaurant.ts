@@ -2,6 +2,8 @@
 
 import express from "express";
 import { Request, Response } from "express";
+import { Restaurant } from "../models/Restaurant";
+import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
@@ -33,31 +35,40 @@ app.post("/register", async function (req: Request, res: Response) {
   if (!req.body.www) {
     res.status(401).send("Website url is missing!");
   }
-
   const data = JSON.parse(JSON.stringify(req.body));
 
-  res.status(200).send("Bearer ");
+  const newRestaurant = {
+    id: Date.now(),
+    name: data.name,
+    address: data.address,
+    phone: data.phone,
+    nip: data.nip,
+    email: data.email,
+    www: data.www
+  };
+
+  const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
+
+  if(savedRestaurants.find(r => r.address === newRestaurant.address)) {
+    res.status(400).send("Current address is already taken!");
+  }
+
+  savedRestaurants.push(newRestaurant);
+  await updateStorage('../data/restaurants.json', JSON.stringify(savedRestaurants));
+
+  res.status(200).send("New restaurant registration succeded! It's ID: " + newRestaurant.id);
 });
 
-// POST restaurant
-app.post("/login/restaurant", async function (req: Request, res: Response) {
-  if (!req.body) {
-    res.status(400).send("Błędnie wprowadzone wartości!");
+/* GET */
+
+// GET registered restaurant
+app.get("/restaurant/:id", async function (req: Request, res: Response) {
+  if (!req.params.id) {
+    res.status(400).send("You need to send ID!");
   }
 
-  if (!req.body.name) {
-    res.status(400).send("Wprowadzona restauracja musi mieć nazwe!");
-  }
 
-  if (!req.body.adress) {
-    res.status(400).send("Wprowadzona restauracja musi mieć adres!");
-  }
-
-  if (!req.body.nip) {
-    res.status(400).send("Wprowadzona restauracja musi mieć nip!");
-  }
-
-  res.status(201).send("ID wprowadzonej notatki: ");
+  res.status(201).send("Restaurant data: ");
 });
 
 app.listen(3000);
