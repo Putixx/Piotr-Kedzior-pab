@@ -63,8 +63,8 @@ app.post("/register", async function (req: Request, res: Response) {
 
 // GET registered restaurants of same name
 app.get("/restaurant/:name", async function (req: Request, res: Response) {
-  if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+  if (!req.params.name) {
+    res.status(400).send("You need to send restaurant name!");
   }
 
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
@@ -92,14 +92,10 @@ app.get("/restaurant/:name", async function (req: Request, res: Response) {
 
 // GET registered restaurants
 app.get("/restaurants", async function (req: Request, res: Response) {
-  if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
-  }
-
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    res.status(400).send("There is no restaurant!");
+    res.status(400).send("There is no restaurants!");
   }
 
   let print = "";
@@ -111,6 +107,61 @@ app.get("/restaurants", async function (req: Request, res: Response) {
   }
 
   res.status(201).send("Restaurants with same name: " + print);
+});
+
+/* PUT */
+
+// EDIT registered restaurant by id
+app.put("/restaurant/:id", async function (req: Request, res: Response) {
+  if(!req.body) {
+    res.status(400).send("You need to send new data to update existing restaurant!");
+  }
+  if (!req.params.id) {
+    res.status(400).send("You need to send ID!");
+  }
+  
+  const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
+
+  if(savedRestaurants.length < 1) {
+    res.status(400).send("There is no restaurants!");
+  }
+
+  const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.name)
+
+  if(restaurantIndex === -1) {
+    res.status(400).send("Wrong ID!");
+  }
+
+  const data = JSON.parse(JSON.stringify(req.body));
+  const tempRestaurant = savedRestaurants[restaurantIndex];
+
+  if(data.name) {
+    savedRestaurants[restaurantIndex].name = data.name;
+  }
+  if(data.address) {
+    savedRestaurants[restaurantIndex].address = data.address;
+  }
+  if(data.phone) {
+    savedRestaurants[restaurantIndex].phone = data.phone;
+  }
+  if(data.nip) {
+    savedRestaurants[restaurantIndex].nip = data.nip;
+  }
+  if(data.email) {
+    savedRestaurants[restaurantIndex].email = data.email;
+  }
+  if(data.www) {
+    savedRestaurants[restaurantIndex].www = data.www;
+  }
+
+  const printOld = "ID: " + tempRestaurant.id + " Name: " + tempRestaurant.name + " Address: " + tempRestaurant.address 
+  + " Phone: " + tempRestaurant.phone + " NIP: " + tempRestaurant.nip + " E-mail: " + tempRestaurant.email + " Website: " + tempRestaurant.www + "\n";
+
+  const printNew = "ID: " + savedRestaurants[restaurantIndex].id + " Name: " + savedRestaurants[restaurantIndex].name 
+  + " Address: " + savedRestaurants[restaurantIndex].address + " Phone: " + savedRestaurants[restaurantIndex].phone 
+  + " NIP: " + savedRestaurants[restaurantIndex].nip + " E-mail: " + savedRestaurants[restaurantIndex].email + " Website: " + savedRestaurants[restaurantIndex].www + "\n";
+
+  res.status(201).send("Restaurant before edit: " + printOld + " Restaurant after edit: " + printNew);
 });
 
 app.listen(3000);
