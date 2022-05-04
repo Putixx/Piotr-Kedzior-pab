@@ -12,13 +12,6 @@ app.use(express.json());
 
 /* SETUP END */
 
-function click(){
-  const x = document.getElementById("divid") as HTMLInputElement;
-  x.innerHTML = "Witaj";
-}
-
-
-
 /* POST BEG */
 
 // POST login
