@@ -61,14 +61,33 @@ app.post("/register", async function (req: Request, res: Response) {
 
 /* GET */
 
-// GET registered restaurant
-app.get("/restaurant/:id", async function (req: Request, res: Response) {
+// GET registered restaurants of same name
+app.get("/restaurant/:name", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
 
+  const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
-  res.status(201).send("Restaurant data: ");
+  if(savedRestaurants.length < 1) {
+    res.status(400).send("There is no such restaurant!");
+  }
+
+  const specificRestaurants = savedRestaurants.filter(r => r.name === req.params.name)
+
+  if(!specificRestaurants) {
+    res.status(400).send("There is no such restaurant!");
+  }
+
+  let print = "";
+
+  for(let i = 0; i < specificRestaurants.length; i++) {
+    print += "ID: " + specificRestaurants[i].id + " Name: " + specificRestaurants[i].name + " Address: " + specificRestaurants[i].address 
+    + " Phone: " + specificRestaurants[i].phone  + " NIP: " + specificRestaurants[i].nip + " E-mail: " + specificRestaurants[i].email 
+    + " Website: " + specificRestaurants[i].www + "\n";
+  }
+
+  res.status(201).send("Restaurants with same name: " + print);
 });
 
 app.listen(3000);
