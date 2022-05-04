@@ -191,7 +191,3 @@ app.delete("/restaurant/:id", async function (req: Request, res: Response) {
 });
 
 app.listen(3000);
-
-
-
-
