@@ -1,12 +1,13 @@
 export {Table};
 
+enum TableStatus { free = 'free', taken = 'taken', unavailable = 'unavailable'}
 
 class Table
 {
     id?:number;
     name:string;
     numPlaces:number;
-    status:string; // wolny/zajęty/niedostępny
+    status:TableStatus; 
 
     constructor(t : Table)
     {

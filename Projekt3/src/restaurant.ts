@@ -61,7 +61,7 @@ app.post("/register", async function (req: Request, res: Response) {
 
 /* GET */
 
-// GET registered restaurants of same name
+// GET registered restaurants with same name
 app.get("/restaurant/:name", async function (req: Request, res: Response) {
   if (!req.params.name) {
     res.status(400).send("You need to send restaurant name!");
@@ -87,7 +87,7 @@ app.get("/restaurant/:name", async function (req: Request, res: Response) {
     + " Website: " + specificRestaurants[i].www + "\n";
   }
 
-  res.status(201).send("Restaurants with same name: " + print);
+  res.status(201).send("Restaurants with same name: \n" + print);
 });
 
 // GET registered restaurants
@@ -106,7 +106,7 @@ app.get("/restaurants", async function (req: Request, res: Response) {
     + " Website: " + savedRestaurants[i].www + "\n";
   }
 
-  res.status(201).send("Restaurants with same name: " + print);
+  res.status(201).send("Restaurants list: \n" + print);
 });
 
 /* PUT */
@@ -167,7 +167,7 @@ app.put("/restaurant/:id", async function (req: Request, res: Response) {
 
 /* DELETE */
 
-// DELETE registered restaurants of same name
+// DELETE registered restaurant by id
 app.delete("/restaurant/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
