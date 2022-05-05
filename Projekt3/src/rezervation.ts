@@ -73,6 +73,30 @@ app.get("/rezervations", async function (req: Request, res: Response) {
   res.status(201).send("List of rezervations: \n" + print);
 });
 
+// GET registered rezervation by id
+app.get("/rezervation/:id", async function (req: Request, res: Response) {
+  if (!req.params.id) {
+    res.status(400).send("You need to send ID!");
+  }
+  
+  const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervation.json')) ?? [];
+
+  if(savedRezervations.length < 1) {
+    res.status(400).send("There is no rezervations!");
+  }
+
+  const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
+
+  if(reservationIndex === -1) {
+    res.status(400).send("Wrong ID!");
+  }
+
+  const print = "ID: " + savedRezervations[reservationIndex].id + " Table: " + savedRezervations[reservationIndex].table + " Start: " + savedRezervations[reservationIndex].start 
+  + " End: " + savedRezervations[reservationIndex].end + " Client: " + savedRezervations[reservationIndex].client + "\n";
+
+  res.status(201).send("Reservation: " + print);
+});
+
 /* PUT */
 
 // EDIT registered rezervation by id
@@ -90,7 +114,7 @@ app.put("/rezervation/:id", async function (req: Request, res: Response) {
     res.status(400).send("There is no rezervations!");
   }
 
-  const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.name)
+  const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
 
   if(reservationIndex === -1) {
     res.status(400).send("Wrong ID!");
