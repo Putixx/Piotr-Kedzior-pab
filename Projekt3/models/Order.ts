@@ -4,13 +4,14 @@ import {Meal} from './Meal'
 
 export {Order};
 
+enum OrderStatus { ordered = 'ordered', inprogress = 'inprogress', realized = 'realized', bill = 'bill'}
 
 class Order
 {
     id:number;
     worker:Worker;
     meals:Meal[];
-    status:string;
+    status:OrderStatus;
     table:Table;
     price:string;
 
