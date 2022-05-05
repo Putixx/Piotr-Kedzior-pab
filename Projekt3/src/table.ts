@@ -93,6 +93,30 @@ app.get("/tables", async function (req: Request, res: Response) {
   res.status(201).send("List of tables: \n" + print);
 });
 
+// GET registered table by id
+app.get("/table/:id", async function (req: Request, res: Response) {
+  if (!req.params.id) {
+    res.status(400).send("You need to send ID!");
+  }
+  
+  const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
+
+  if(savedTables.length < 1) {
+    res.status(400).send("There is no tables!");
+  }
+
+  const tableIndex = savedTables.findIndex(t => t.id === +req.params.id)
+
+  if(tableIndex === -1) {
+    res.status(400).send("Wrong ID!");
+  }
+
+  const print = "ID: " + savedTables[tableIndex].id + " Name: " + savedTables[tableIndex].name + " Number of place settings: " 
+  + savedTables[tableIndex].numPlaces + " Status: " + savedTables[tableIndex].status + "\n";
+
+  res.status(201).send("Table before edit: " + print);
+});
+
 /* PUT */
 
 // EDIT registered tables by id
@@ -110,7 +134,7 @@ app.put("/table/:id", async function (req: Request, res: Response) {
     res.status(400).send("There is no tables!");
   }
 
-  const tableIndex = savedTables.findIndex(t => t.id === +req.params.name)
+  const tableIndex = savedTables.findIndex(t => t.id === +req.params.id)
 
   if(tableIndex === -1) {
     res.status(400).send("Wrong ID!");
@@ -153,7 +177,7 @@ app.delete("/table/:id", async function (req: Request, res: Response) {
     res.status(400).send("There is no tables!");
   }
 
-  const tableIndex = savedTables.findIndex(t => t.id === +req.params.name)
+  const tableIndex = savedTables.findIndex(t => t.id === +req.params.id)
 
   if(tableIndex === -1) {
     res.status(400).send("Wrong ID!");

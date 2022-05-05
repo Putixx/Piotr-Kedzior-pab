@@ -152,7 +152,7 @@ app.put("/restaurant/:id", async function (req: Request, res: Response) {
     res.status(400).send("There is no restaurants!");
   }
 
-  const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.name)
+  const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.id)
 
   if(restaurantIndex === -1) {
     res.status(400).send("Wrong ID!");
@@ -205,7 +205,7 @@ app.delete("/restaurant/:id", async function (req: Request, res: Response) {
     res.status(400).send("There is no restaurants!");
   }
 
-  const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.name)
+  const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.id)
 
   if(restaurantIndex === -1) {
     res.status(400).send("Wrong ID!");

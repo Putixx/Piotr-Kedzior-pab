@@ -160,7 +160,7 @@ app.delete("/rezervation/:id", async function (req: Request, res: Response) {
     res.status(400).send("There is no rezervations!");
   }
 
-  const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.name)
+  const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
 
   if(reservationIndex === -1) {
     res.status(400).send("Wrong ID!");
