@@ -13,7 +13,7 @@ app.use(express.json());
 /* POST */
 
 // POST register new restaurant
-app.post("/register", async function (req: Request, res: Response) {
+app.post("/register/restaurant", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
   }

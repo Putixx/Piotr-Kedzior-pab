@@ -13,7 +13,7 @@ app.use(express.json());
 /* POST */
 
 // POST register new table
-app.post("/register", async function (req: Request, res: Response) {
+app.post("/register/table", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new table you need to send it's: name, number of place settings and status!");
   }
@@ -77,7 +77,7 @@ app.get("/tables/:numPlaces", async function (req: Request, res: Response) {
 
 // GET registered tables
 app.get("/tables", async function (req: Request, res: Response) {
-  const savedTables: Table[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
+  const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
     res.status(400).send("There is no tables!");
