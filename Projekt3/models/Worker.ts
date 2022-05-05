@@ -3,7 +3,7 @@ export {Worker};
 
 class Worker
 {
-    id?:number;
+    id:number;
     name:string;
     surname:string;
     occupation:string;

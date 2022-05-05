@@ -26,27 +26,30 @@ app.post("/register/table", async function (req: Request, res: Response) {
   if (!req.body.status) {
     res.status(401).send("Status is missing!");
   }
+  if(req.body.status === 'free' || req.body.status === 'taken' || req.body.status === 'unavailable') {
+    const data = JSON.parse(JSON.stringify(req.body));
 
-  const data = JSON.parse(JSON.stringify(req.body));
-
-
-  const newTable = {
-    id: Date.now(),
-    name: data.name,
-    numPlaces: data.numPlaces,
-    status: data.status
-  };
-
-  const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
-
-  if(savedTables.find(t => t.name === newTable.name)) {
-    res.status(400).send("Current table is already registered!");
+    const newTable = {
+      id: Date.now(),
+      name: data.name,
+      numPlaces: data.numPlaces,
+      status: data.status
+    };
+  
+    const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
+  
+    if(savedTables.find(t => t.name === newTable.name)) {
+      res.status(400).send("Current table is already registered!");
+    }
+  
+    savedTables.push(newTable);
+    await updateStorage('../data/tables.json', JSON.stringify(savedTables));
+  
+    res.status(200).send("New table registration succeded! It's ID: " + newTable.id);
   }
-
-  savedTables.push(newTable);
-  await updateStorage('../data/tables.json', JSON.stringify(savedTables));
-
-  res.status(200).send("New table registration succeded! It's ID: " + newTable.id);
+  else {
+    res.status(401).send("Statuses available: free, taken, unavailable!");
+  }
 });
 
 /* GET */

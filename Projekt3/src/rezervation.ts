@@ -48,9 +48,9 @@ app.post("/register/rezervation", async function (req: Request, res: Response) {
   }
 
   savedRezervations.push(newRezervation);
-  await updateStorage('../data/tables.json', JSON.stringify(savedRezervations));
+  await updateStorage('../data/rezervations.json', JSON.stringify(savedRezervations));
 
-  res.status(200).send("New table registration succeded! It's ID: " + newRezervation.id);
+  res.status(200).send("New rezervation registration succeded! It's ID: " + newRezervation.id);
 });
 
 /* GET */
@@ -143,7 +143,7 @@ app.put("/rezervation/:id", async function (req: Request, res: Response) {
   + " End: " + savedRezervations[reservationIndex].end + " Client: " + savedRezervations[reservationIndex].client + "\n";
 
   await updateStorage('../data/rezervations.json', JSON.stringify(savedRezervations));
-  res.status(201).send("Table before edit: " + printOld + " Table after edit: " + printNew);
+  res.status(201).send("Rezervation before edit: " + printOld + " Rezervation after edit: " + printNew);
 });
 
 /* DELETE */

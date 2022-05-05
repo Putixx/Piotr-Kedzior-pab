@@ -1,13 +1,14 @@
 export {Product};
 
+enum UnitOfMeasure { gram = 'g', dekagram = 'dg', kilogram = 'kg', tona = 't'}
 
 class Product
 {
-    id?:number;
+    id:number;
     name:string;
     price:string;
     quantity:string;
-    unitOfMessure:string;
+    unitOfMeasure:UnitOfMeasure;
 
     constructor(t : Product)
     {
@@ -15,6 +16,6 @@ class Product
         this.name = t.name;
         this.price = t.price;
         this.quantity = t.quantity;
-        this.unitOfMessure = t.unitOfMessure;
+        this.unitOfMeasure = t.unitOfMeasure;
     }
 }

@@ -5,7 +5,7 @@ export {Rezervation};
 
 class Rezervation
 {
-    id?:number;
+    id:number;
     table:Table;
     start:string;
     end:string;

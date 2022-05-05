@@ -12,7 +12,7 @@ app.use(express.json());
 
 /* POST */
 
-// POST register new table
+// POST register new worker
 app.post("/register/worker", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new worker you need to send it's: name, surname and occupation!");
@@ -77,7 +77,7 @@ app.get("/worker/:id", async function (req: Request, res: Response) {
   const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
-    res.status(400).send("There is no tables!");
+    res.status(400).send("There is no workers!");
   }
 
   const workerIndex = savedWorkers.findIndex(w => w.id === +req.params.id)
@@ -89,7 +89,7 @@ app.get("/worker/:id", async function (req: Request, res: Response) {
   const print = "ID: " + savedWorkers[workerIndex].id + " Name: " + savedWorkers[workerIndex].name + " Surname: " + savedWorkers[workerIndex].surname 
   + " Occupation: " + savedWorkers[workerIndex].occupation + "\n";
 
-  res.status(201).send("Table before edit: " + print);
+  res.status(201).send("Worker: " + print);
 });
 
 /* PUT */
@@ -109,7 +109,7 @@ app.put("/worker/:id", async function (req: Request, res: Response) {
     res.status(400).send("There is no workers!");
   }
 
-  const workerIndex = savedWorkers.findIndex(t => t.id === +req.params.id)
+  const workerIndex = savedWorkers.findIndex(w => w.id === +req.params.id)
 
   if(workerIndex === -1) {
     res.status(400).send("Wrong ID!");

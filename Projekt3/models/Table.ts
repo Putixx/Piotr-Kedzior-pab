@@ -4,7 +4,7 @@ enum TableStatus { free = 'free', taken = 'taken', unavailable = 'unavailable'}
 
 class Table
 {
-    id?:number;
+    id:number;
     name:string;
     numPlaces:number;
     status:TableStatus; 

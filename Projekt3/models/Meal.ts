@@ -3,7 +3,7 @@ export {Meal};
 
 class Meal
 {
-    id?:number;
+    id:number;
     name:string;
     price:string;
     category:string;

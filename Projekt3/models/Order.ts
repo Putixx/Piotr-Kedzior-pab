@@ -7,7 +7,7 @@ export {Order};
 
 class Order
 {
-    id?:number;
+    id:number;
     worker:Worker;
     meals:Meal[];
     status:string;
