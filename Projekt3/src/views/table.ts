@@ -15,16 +15,16 @@ app.use(express.json());
 // POST register new table
 app.post("/register/table", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(401).send("To register a new table you need to send it's: name, number of place settings and status!");
+    res.status(400).send("To register a new table you need to send it's: name, number of place settings and status!");
   }
   if (!req.body.name) {
-    res.status(401).send("Name is missing!");
+    res.status(400).send("Name is missing!");
   }
   if (!req.body.numPlaces) {
-    res.status(401).send("Number of place settings is missing!");
+    res.status(400).send("Number of place settings is missing!");
   }
   if (!req.body.status) {
-    res.status(401).send("Status is missing!");
+    res.status(400).send("Status is missing!");
   }
   if(req.body.status === 'free' || req.body.status === 'taken' || req.body.status === 'unavailable') {
     const data = JSON.parse(JSON.stringify(req.body));

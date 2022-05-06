@@ -7,8 +7,8 @@ class Rezervation
 {
     id:number;
     table:Table;
-    start:string;
-    end:string;
+    start:Date;
+    end:Date;
     client:string;
 
     constructor(t : Rezervation)

@@ -15,16 +15,16 @@ app.use(express.json());
 // POST register new meal
 app.post("/register/meal", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(401).send("To register a new meal you need to send it's: name, price, and category!");
+    res.status(400).send("To register a new meal you need to send it's: name, price, and category!");
   }
   if (!req.body.name) {
-    res.status(401).send("Name is missing!");
+    res.status(400).send("Name is missing!");
   }
   if (!req.body.price) {
-    res.status(401).send("Price time is missing!");
+    res.status(400).send("Price time is missing!");
   }
   if (!req.body.category) {
-    res.status(401).send("Category is missing!");
+    res.status(400).send("Category is missing!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
