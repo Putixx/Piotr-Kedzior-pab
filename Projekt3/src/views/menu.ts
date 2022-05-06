@@ -37,14 +37,14 @@ app.post("/register/meal", async function (req: Request, res: Response) {
     category: data.category
   };
 
-  const savedMeals: Meal[] = JSON.parse(await readStorage('../data/menu.json')) ?? [];
+  const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
   if(savedMeals.find(m => m.name === newMeal.name &&  m.price === newMeal.price &&  m.category === newMeal.category)) {
     res.status(400).send("Current meal is already registered!");
   }
 
   savedMeals.push(newMeal);
-  await updateStorage('../data/menu.json', JSON.stringify(savedMeals));
+  await updateStorage('./data/menu.json', JSON.stringify(savedMeals));
 
   res.status(200).send("New meal registration succeded! It's ID: " + newMeal.id);
 });
@@ -53,7 +53,7 @@ app.post("/register/meal", async function (req: Request, res: Response) {
 
 // GET registered meals
 app.get("/menu", async function (req: Request, res: Response) {
-  const savedMeals: Meal[] = JSON.parse(await readStorage('../data/menu.json')) ?? [];
+  const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
   if(savedMeals.length < 1) {
     res.status(400).send("There is no meals in menu!");
@@ -75,7 +75,7 @@ app.get("/menu/:id", async function (req: Request, res: Response) {
     res.status(400).send("You need to send ID!");
   }
   
-  const savedMeals: Meal[] = JSON.parse(await readStorage('../data/menu.json')) ?? [];
+  const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
   if(savedMeals.length < 1) {
     res.status(400).send("There is no meals in menu!");
@@ -104,7 +104,7 @@ app.put("/menu/:id", async function (req: Request, res: Response) {
     res.status(400).send("You need to send ID!");
   }
   
-  const savedMeals: Meal[] = JSON.parse(await readStorage('../data/menu.json')) ?? [];
+  const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
   if(savedMeals.length < 1) {
     res.status(400).send("There is no meals in menu!");
@@ -117,7 +117,8 @@ app.put("/menu/:id", async function (req: Request, res: Response) {
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
-  const tempTable = savedMeals[mealIndex];
+  const printOld = "ID: " + savedMeals[mealIndex].id + " Name: " + savedMeals[mealIndex].name + " Price: " + savedMeals[mealIndex].price 
+  + " Category: " + savedMeals[mealIndex].category + "\n";
 
   if(data.name) {
     savedMeals[mealIndex].name = data.name;
@@ -129,13 +130,10 @@ app.put("/menu/:id", async function (req: Request, res: Response) {
     savedMeals[mealIndex].category = data.category;
   }
   
-  const printOld = "ID: " + tempTable.id + " Name: " + tempTable.name + " Price: " + tempTable.price 
-  + " Category: " + tempTable.category + "\n";
-
   const printNew = "ID: " + savedMeals[mealIndex].id + " Name: " + savedMeals[mealIndex].name + " Price: " + savedMeals[mealIndex].price 
   + " Category: " + savedMeals[mealIndex].category + "\n";
 
-  await updateStorage('../data/menu.json', JSON.stringify(savedMeals));
+  await updateStorage('./data/menu.json', JSON.stringify(savedMeals));
   res.status(201).send("Meal before edit: " + printOld + " Meal after edit: " + printNew);
 });
 
@@ -147,7 +145,7 @@ app.delete("/menu/:id", async function (req: Request, res: Response) {
     res.status(400).send("You need to send ID!");
   }
   
-  const savedMeals: Meal[] = JSON.parse(await readStorage('../data/menu.json')) ?? [];
+  const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
   if(savedMeals.length < 1) {
     res.status(400).send("There is no meals in menu!");
@@ -160,7 +158,7 @@ app.delete("/menu/:id", async function (req: Request, res: Response) {
   }
 
   savedMeals.splice(mealIndex, 1);
-  await updateStorage('../data/menu.json', JSON.stringify(savedMeals));
+  await updateStorage('./data/menu.json', JSON.stringify(savedMeals));
   res.status(201).send("Meal successfuly removed!");
 });
 

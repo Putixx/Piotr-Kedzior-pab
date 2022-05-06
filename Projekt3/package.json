@@ -5,7 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon ./src/restaurant.ts"
+    "start": "npx nodemon ./src/app.ts",
+    "testmenu": "npx nodemon ./src/views/menu.ts",
+    "testorder": "npx nodemon ./src/views/order.ts",
+    "testrestar": "npx nodemon ./src/views/restaurant.ts",
+    "testrezer": "npx nodemon ./src/views/rezervation.ts",
+    "testtable": "npx nodemon ./src/views/table.ts",
+    "testware": "npx nodemon ./src/views/warehouse.ts",
+    "testworker": "npx nodemon ./src/views/worker.ts"
   },
   "keywords": [],
   "author": "",
