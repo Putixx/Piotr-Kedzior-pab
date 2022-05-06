@@ -1,0 +1,20 @@
+MENU:
+{"name":"schabowy z pure","price":"23","category":"dinner"}
+
+ORDER:
+{"worker":{"name":"majkel", "surname":"jordanaa", "occupation":"manager"}, "meals":[{"name":"schab i ziemniaki", "price":"25", "category":"dinner"}, {"name":"tiramisu", "price":"18", "category":"deser"}], "status":"inprogress", "table":{"name":"table1", "numPlaces":"2", "status":"taken"}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
