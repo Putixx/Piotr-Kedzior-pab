@@ -7,13 +7,12 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
-const app = express();
-app.use(express.json());
+const orderRouter = express.Router();
 
 /* POST */
 
 // POST register new order
-app.post("/register/order", async function (req: Request, res: Response) {
+orderRouter.post("/register/order", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(400).send("To register a new order you need to send it's: worker, meals, status, table and price!");
   }
@@ -65,7 +64,7 @@ app.post("/register/order", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered orders
-app.get("/orders", async function (req: Request, res: Response) {
+orderRouter.get("/orders", async function (req: Request, res: Response) {
   const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
   if(savedOrders.length < 1) {
@@ -90,7 +89,7 @@ app.get("/orders", async function (req: Request, res: Response) {
 });
 
 // GET registered order by id
-app.get("/order/:id", async function (req: Request, res: Response) {
+orderRouter.get("/order/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -122,7 +121,7 @@ app.get("/order/:id", async function (req: Request, res: Response) {
 });
 
 // GET registered order by worker
-app.get("/order/:name/:surname", async function (req: Request, res: Response) {
+orderRouter.get("/order/:name/:surname", async function (req: Request, res: Response) {
     if (!req.params.name) {
       res.status(400).send("You need to send worker's name!");
     }
@@ -163,7 +162,7 @@ app.get("/order/:name/:surname", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered order by id
-app.put("/order/:id", async function (req: Request, res: Response) {
+orderRouter.put("/order/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing order!");
   }
@@ -227,7 +226,7 @@ app.put("/order/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered order by id
-app.delete("/order/:id", async function (req: Request, res: Response) {
+orderRouter.delete("/order/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -249,4 +248,4 @@ app.delete("/order/:id", async function (req: Request, res: Response) {
   res.status(201).send("Order successfuly removed!");
 });
 
-app.listen(3000);
+export default orderRouter;

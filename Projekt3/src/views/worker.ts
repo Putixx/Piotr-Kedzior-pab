@@ -7,13 +7,12 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
-const app = express();
-app.use(express.json());
+const workerRouter = express.Router();
 
 /* POST */
 
 // POST register new worker
-app.post("/register/worker", async function (req: Request, res: Response) {
+workerRouter.post("/register/worker", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new worker you need to send it's: name, surname and occupation!");
   }
@@ -51,7 +50,7 @@ app.post("/register/worker", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered workers
-app.get("/workers", async function (req: Request, res: Response) {
+workerRouter.get("/workers", async function (req: Request, res: Response) {
   const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
@@ -69,7 +68,7 @@ app.get("/workers", async function (req: Request, res: Response) {
 });
 
 // GET registered worker by id
-app.get("/worker/:id", async function (req: Request, res: Response) {
+workerRouter.get("/worker/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -95,7 +94,7 @@ app.get("/worker/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered worker by id
-app.put("/worker/:id", async function (req: Request, res: Response) {
+workerRouter.put("/worker/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing worker!");
   }
@@ -141,7 +140,7 @@ app.put("/worker/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered worker by id
-app.delete("/worker/:id", async function (req: Request, res: Response) {
+workerRouter.delete("/worker/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -163,4 +162,4 @@ app.delete("/worker/:id", async function (req: Request, res: Response) {
   res.status(201).send("Worker successfuly removed!");
 });
 
-app.listen(3000);
+export default workerRouter;

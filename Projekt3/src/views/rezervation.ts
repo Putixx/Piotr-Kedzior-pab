@@ -7,13 +7,12 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
-const app = express();
-app.use(express.json());
+const rezervationRouter = express.Router();
 
 /* POST */
 
 // POST register new rezervation
-app.post("/register/rezervation", async function (req: Request, res: Response) {
+rezervationRouter.post("/register/rezervation", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new rezervation you need to send it's: table, start time, end time and client!");
   }
@@ -56,7 +55,7 @@ app.post("/register/rezervation", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered rezervations
-app.get("/rezervations", async function (req: Request, res: Response) {
+rezervationRouter.get("/rezervations", async function (req: Request, res: Response) {
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervations.json')) ?? [];
 
   if(savedRezervations.length < 1) {
@@ -74,7 +73,7 @@ app.get("/rezervations", async function (req: Request, res: Response) {
 });
 
 // GET registered rezervation by id
-app.get("/rezervation/:id", async function (req: Request, res: Response) {
+rezervationRouter.get("/rezervation/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -100,7 +99,7 @@ app.get("/rezervation/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered rezervation by id
-app.put("/rezervation/:id", async function (req: Request, res: Response) {
+rezervationRouter.put("/rezervation/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing rezervation!");
   }
@@ -149,7 +148,7 @@ app.put("/rezervation/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered rezervation by id
-app.delete("/rezervation/:id", async function (req: Request, res: Response) {
+rezervationRouter.delete("/rezervation/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -171,4 +170,4 @@ app.delete("/rezervation/:id", async function (req: Request, res: Response) {
   res.status(201).send("Rezervation successfuly removed!");
 });
 
-app.listen(3000);
+export default rezervationRouter;

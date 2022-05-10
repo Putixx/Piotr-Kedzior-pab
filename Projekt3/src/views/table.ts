@@ -7,13 +7,12 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
-const app = express();
-app.use(express.json());
+const tableRouter = express.Router();
 
 /* POST */
 
 // POST register new table
-app.post("/register/table", async function (req: Request, res: Response) {
+tableRouter.post("/register/table", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(400).send("To register a new table you need to send it's: name, number of place settings and status!");
   }
@@ -55,7 +54,7 @@ app.post("/register/table", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered tables with specific number of place settings
-app.get("/tables/:numPlaces", async function (req: Request, res: Response) {
+tableRouter.get("/tables/:numPlaces", async function (req: Request, res: Response) {
   const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
@@ -79,7 +78,7 @@ app.get("/tables/:numPlaces", async function (req: Request, res: Response) {
 });
 
 // GET registered tables
-app.get("/tables", async function (req: Request, res: Response) {
+tableRouter.get("/tables", async function (req: Request, res: Response) {
   const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
@@ -97,7 +96,7 @@ app.get("/tables", async function (req: Request, res: Response) {
 });
 
 // GET registered table by id
-app.get("/table/:id", async function (req: Request, res: Response) {
+tableRouter.get("/table/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -123,7 +122,7 @@ app.get("/table/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered tables by id
-app.put("/table/:id", async function (req: Request, res: Response) {
+tableRouter.put("/table/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing table!");
   }
@@ -169,7 +168,7 @@ app.put("/table/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered table by id
-app.delete("/table/:id", async function (req: Request, res: Response) {
+tableRouter.delete("/table/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -191,4 +190,4 @@ app.delete("/table/:id", async function (req: Request, res: Response) {
   res.status(201).send("Table successfuly removed!");
 });
 
-app.listen(3000);
+export default tableRouter;

@@ -7,13 +7,12 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
-const app = express();
-app.use(express.json());
+const restaurantRouter = express.Router();
 
 /* POST */
 
 // POST register new restaurant
-app.post("/register/restaurant", async function (req: Request, res: Response) {
+restaurantRouter.post("/register/restaurant", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
   }
@@ -62,7 +61,7 @@ app.post("/register/restaurant", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered restaurants with same name
-app.get("/restaurant/:name", async function (req: Request, res: Response) {
+restaurantRouter.get("/restaurant/:name", async function (req: Request, res: Response) {
   if (!req.params.name) {
     res.status(400).send("You need to send restaurant name!");
   }
@@ -91,7 +90,7 @@ app.get("/restaurant/:name", async function (req: Request, res: Response) {
 });
 
 // GET registered restaurant by id
-app.get("/restaurant/:id", async function (req: Request, res: Response) {
+restaurantRouter.get("/restaurant/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send restaurant ID!");
   }
@@ -117,7 +116,7 @@ app.get("/restaurant/:id", async function (req: Request, res: Response) {
 });
 
 // GET registered restaurants
-app.get("/restaurants", async function (req: Request, res: Response) {
+restaurantRouter.get("/restaurants", async function (req: Request, res: Response) {
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
@@ -138,7 +137,7 @@ app.get("/restaurants", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered restaurant by id
-app.put("/restaurant/:id", async function (req: Request, res: Response) {
+restaurantRouter.put("/restaurant/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing restaurant!");
   }
@@ -194,7 +193,7 @@ app.put("/restaurant/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered restaurant by id
-app.delete("/restaurant/:id", async function (req: Request, res: Response) {
+restaurantRouter.delete("/restaurant/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -216,4 +215,4 @@ app.delete("/restaurant/:id", async function (req: Request, res: Response) {
   res.status(201).send("Restaurant successfuly removed!");
 });
 
-app.listen(3000);
+export default restaurantRouter;

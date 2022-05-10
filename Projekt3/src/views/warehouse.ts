@@ -7,13 +7,12 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
-const app = express();
-app.use(express.json());
+const warehouseRouter = express.Router();
 
 /* POST */
 
 // POST register new product
-app.post("/register/product", async function (req: Request, res: Response) {
+warehouseRouter.post("/register/product", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new product you need to send it's: name, price, quantity and unit of measure!");
   }
@@ -58,7 +57,7 @@ app.post("/register/product", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered products
-app.get("/products", async function (req: Request, res: Response) {
+warehouseRouter.get("/products", async function (req: Request, res: Response) {
   const savedProducts: Product[] = JSON.parse(await readStorage('../data/products.json')) ?? [];
 
   if(savedProducts.length < 1) {
@@ -76,7 +75,7 @@ app.get("/products", async function (req: Request, res: Response) {
 });
 
 // GET registered products
-app.get("/products/:sort", async function (req: Request, res: Response) {
+warehouseRouter.get("/products/:sort", async function (req: Request, res: Response) {
     if(!req.params.sort) {
         res.status(400).send("Sort param needed! Possible: ID, name, price, quantity");
     }
@@ -149,7 +148,7 @@ app.get("/products/:sort", async function (req: Request, res: Response) {
   });
 
 // GET registered product by id
-app.get("/product/:id", async function (req: Request, res: Response) {
+warehouseRouter.get("/product/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -175,7 +174,7 @@ app.get("/product/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered product by id
-app.put("/product/:id", async function (req: Request, res: Response) {
+warehouseRouter.put("/product/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing product!");
   }
@@ -224,7 +223,7 @@ app.put("/product/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered product by id
-app.delete("/product/:id", async function (req: Request, res: Response) {
+warehouseRouter.delete("/product/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -246,4 +245,4 @@ app.delete("/product/:id", async function (req: Request, res: Response) {
   res.status(201).send("Product successfuly removed!");
 });
 
-app.listen(3000);
+export default warehouseRouter;

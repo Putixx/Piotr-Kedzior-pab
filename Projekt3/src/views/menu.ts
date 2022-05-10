@@ -7,13 +7,12 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
-const app = express();
-app.use(express.json());
+const menuRouter = express.Router();
 
 /* POST */
 
 // POST register new meal
-app.post("/register/meal", async function (req: Request, res: Response) {
+menuRouter.post("/register/meal", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(400).send("To register a new meal you need to send it's: name, price, and category!");
   }
@@ -52,7 +51,7 @@ app.post("/register/meal", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered meals
-app.get("/menu", async function (req: Request, res: Response) {
+menuRouter.get("/menu", async function (req: Request, res: Response) {
   const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
   if(savedMeals.length < 1) {
@@ -70,7 +69,7 @@ app.get("/menu", async function (req: Request, res: Response) {
 });
 
 // GET registered meal by id
-app.get("/menu/:id", async function (req: Request, res: Response) {
+menuRouter.get("/menu/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -96,7 +95,7 @@ app.get("/menu/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered meal by id
-app.put("/menu/:id", async function (req: Request, res: Response) {
+menuRouter.put("/menu/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing meal!");
   }
@@ -140,7 +139,7 @@ app.put("/menu/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered meal by id
-app.delete("/menu/:id", async function (req: Request, res: Response) {
+menuRouter.delete("/menu/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -162,4 +161,4 @@ app.delete("/menu/:id", async function (req: Request, res: Response) {
   res.status(201).send("Meal successfuly removed!");
 });
 
-app.listen(3000);
+export default menuRouter;
