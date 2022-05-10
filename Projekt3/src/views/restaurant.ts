@@ -12,7 +12,7 @@ const restaurantRouter = express.Router();
 /* POST */
 
 // POST register new restaurant
-restaurantRouter.post("/register/restaurant", async function (req: Request, res: Response) {
+restaurantRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
   }
@@ -61,7 +61,7 @@ restaurantRouter.post("/register/restaurant", async function (req: Request, res:
 /* GET */
 
 // GET registered restaurants with same name
-restaurantRouter.get("/restaurant/:name", async function (req: Request, res: Response) {
+restaurantRouter.get("/:name", async function (req: Request, res: Response) {
   if (!req.params.name) {
     res.status(400).send("You need to send restaurant name!");
   }
@@ -90,7 +90,7 @@ restaurantRouter.get("/restaurant/:name", async function (req: Request, res: Res
 });
 
 // GET registered restaurant by id
-restaurantRouter.get("/restaurant/:id", async function (req: Request, res: Response) {
+restaurantRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send restaurant ID!");
   }
@@ -137,7 +137,7 @@ restaurantRouter.get("/restaurants", async function (req: Request, res: Response
 /* PUT */
 
 // EDIT registered restaurant by id
-restaurantRouter.put("/restaurant/:id", async function (req: Request, res: Response) {
+restaurantRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing restaurant!");
   }
@@ -193,7 +193,7 @@ restaurantRouter.put("/restaurant/:id", async function (req: Request, res: Respo
 /* DELETE */
 
 // DELETE registered restaurant by id
-restaurantRouter.delete("/restaurant/:id", async function (req: Request, res: Response) {
+restaurantRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }

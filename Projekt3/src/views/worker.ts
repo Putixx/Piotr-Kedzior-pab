@@ -12,7 +12,7 @@ const workerRouter = express.Router();
 /* POST */
 
 // POST register new worker
-workerRouter.post("/register/worker", async function (req: Request, res: Response) {
+workerRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new worker you need to send it's: name, surname and occupation!");
   }
@@ -68,7 +68,7 @@ workerRouter.get("/workers", async function (req: Request, res: Response) {
 });
 
 // GET registered worker by id
-workerRouter.get("/worker/:id", async function (req: Request, res: Response) {
+workerRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -94,7 +94,7 @@ workerRouter.get("/worker/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered worker by id
-workerRouter.put("/worker/:id", async function (req: Request, res: Response) {
+workerRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing worker!");
   }
@@ -140,7 +140,7 @@ workerRouter.put("/worker/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered worker by id
-workerRouter.delete("/worker/:id", async function (req: Request, res: Response) {
+workerRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }

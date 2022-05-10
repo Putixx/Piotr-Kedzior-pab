@@ -12,7 +12,7 @@ const menuRouter = express.Router();
 /* POST */
 
 // POST register new meal
-menuRouter.post("/register/meal", async function (req: Request, res: Response) {
+menuRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(400).send("To register a new meal you need to send it's: name, price, and category!");
   }
@@ -69,7 +69,7 @@ menuRouter.get("/menu", async function (req: Request, res: Response) {
 });
 
 // GET registered meal by id
-menuRouter.get("/menu/:id", async function (req: Request, res: Response) {
+menuRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -95,7 +95,7 @@ menuRouter.get("/menu/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered meal by id
-menuRouter.put("/menu/:id", async function (req: Request, res: Response) {
+menuRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing meal!");
   }
@@ -139,7 +139,7 @@ menuRouter.put("/menu/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered meal by id
-menuRouter.delete("/menu/:id", async function (req: Request, res: Response) {
+menuRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }

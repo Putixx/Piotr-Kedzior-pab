@@ -12,7 +12,7 @@ const warehouseRouter = express.Router();
 /* POST */
 
 // POST register new product
-warehouseRouter.post("/register/product", async function (req: Request, res: Response) {
+warehouseRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new product you need to send it's: name, price, quantity and unit of measure!");
   }
@@ -75,7 +75,7 @@ warehouseRouter.get("/products", async function (req: Request, res: Response) {
 });
 
 // GET registered products
-warehouseRouter.get("/products/:sort", async function (req: Request, res: Response) {
+warehouseRouter.get("/:sort", async function (req: Request, res: Response) {
     if(!req.params.sort) {
         res.status(400).send("Sort param needed! Possible: ID, name, price, quantity");
     }
@@ -148,7 +148,7 @@ warehouseRouter.get("/products/:sort", async function (req: Request, res: Respon
   });
 
 // GET registered product by id
-warehouseRouter.get("/product/:id", async function (req: Request, res: Response) {
+warehouseRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -174,7 +174,7 @@ warehouseRouter.get("/product/:id", async function (req: Request, res: Response)
 /* PUT */
 
 // EDIT registered product by id
-warehouseRouter.put("/product/:id", async function (req: Request, res: Response) {
+warehouseRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing product!");
   }
@@ -223,7 +223,7 @@ warehouseRouter.put("/product/:id", async function (req: Request, res: Response)
 /* DELETE */
 
 // DELETE registered product by id
-warehouseRouter.delete("/product/:id", async function (req: Request, res: Response) {
+warehouseRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }

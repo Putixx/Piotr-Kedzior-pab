@@ -12,7 +12,7 @@ const tableRouter = express.Router();
 /* POST */
 
 // POST register new table
-tableRouter.post("/register/table", async function (req: Request, res: Response) {
+tableRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(400).send("To register a new table you need to send it's: name, number of place settings and status!");
   }
@@ -96,7 +96,7 @@ tableRouter.get("/tables", async function (req: Request, res: Response) {
 });
 
 // GET registered table by id
-tableRouter.get("/table/:id", async function (req: Request, res: Response) {
+tableRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -122,7 +122,7 @@ tableRouter.get("/table/:id", async function (req: Request, res: Response) {
 /* PUT */
 
 // EDIT registered tables by id
-tableRouter.put("/table/:id", async function (req: Request, res: Response) {
+tableRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing table!");
   }
@@ -168,7 +168,7 @@ tableRouter.put("/table/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered table by id
-tableRouter.delete("/table/:id", async function (req: Request, res: Response) {
+tableRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }

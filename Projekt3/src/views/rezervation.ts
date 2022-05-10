@@ -12,7 +12,7 @@ const rezervationRouter = express.Router();
 /* POST */
 
 // POST register new rezervation
-rezervationRouter.post("/register/rezervation", async function (req: Request, res: Response) {
+rezervationRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(401).send("To register a new rezervation you need to send it's: table, start time, end time and client!");
   }
@@ -73,7 +73,7 @@ rezervationRouter.get("/rezervations", async function (req: Request, res: Respon
 });
 
 // GET registered rezervation by id
-rezervationRouter.get("/rezervation/:id", async function (req: Request, res: Response) {
+rezervationRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -99,7 +99,7 @@ rezervationRouter.get("/rezervation/:id", async function (req: Request, res: Res
 /* PUT */
 
 // EDIT registered rezervation by id
-rezervationRouter.put("/rezervation/:id", async function (req: Request, res: Response) {
+rezervationRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing rezervation!");
   }
@@ -148,7 +148,7 @@ rezervationRouter.put("/rezervation/:id", async function (req: Request, res: Res
 /* DELETE */
 
 // DELETE registered rezervation by id
-rezervationRouter.delete("/rezervation/:id", async function (req: Request, res: Response) {
+rezervationRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }

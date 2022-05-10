@@ -12,7 +12,7 @@ const orderRouter = express.Router();
 /* POST */
 
 // POST register new order
-orderRouter.post("/register/order", async function (req: Request, res: Response) {
+orderRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
     res.status(400).send("To register a new order you need to send it's: worker, meals, status, table and price!");
   }
@@ -89,7 +89,7 @@ orderRouter.get("/orders", async function (req: Request, res: Response) {
 });
 
 // GET registered order by id
-orderRouter.get("/order/:id", async function (req: Request, res: Response) {
+orderRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
@@ -121,7 +121,7 @@ orderRouter.get("/order/:id", async function (req: Request, res: Response) {
 });
 
 // GET registered order by worker
-orderRouter.get("/order/:name/:surname", async function (req: Request, res: Response) {
+orderRouter.get("/:name/:surname", async function (req: Request, res: Response) {
     if (!req.params.name) {
       res.status(400).send("You need to send worker's name!");
     }
@@ -162,7 +162,7 @@ orderRouter.get("/order/:name/:surname", async function (req: Request, res: Resp
 /* PUT */
 
 // EDIT registered order by id
-orderRouter.put("/order/:id", async function (req: Request, res: Response) {
+orderRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     res.status(400).send("You need to send new data to update existing order!");
   }
@@ -226,7 +226,7 @@ orderRouter.put("/order/:id", async function (req: Request, res: Response) {
 /* DELETE */
 
 // DELETE registered order by id
-orderRouter.delete("/order/:id", async function (req: Request, res: Response) {
+orderRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     res.status(400).send("You need to send ID!");
   }
