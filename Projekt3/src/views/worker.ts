@@ -2,8 +2,6 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { Worker } from "../models/Worker";
-import { readStorage, updateStorage } from "../services/storageService";
 import { createWorker, readAllWorkers, readWorker, updateWorker } from "../services/workerService";
 
 /* SETUP */
