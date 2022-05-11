@@ -55,7 +55,7 @@ menuRouter.put("/:id", async function (req: Request, res: Response) {
     return res.status(400).send("You need to send ID!");
   }
   
-  return res.status(200).send("Meal before and after edit: " + await updateMeal(+req.params.id, JSON.parse(JSON.stringify(req.body))));
+  return res.status(200).send("Meal before and after edit: \n" + await updateMeal(+req.params.id, JSON.parse(JSON.stringify(req.body))));
 });
 
 /* DELETE */
