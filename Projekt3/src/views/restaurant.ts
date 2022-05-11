@@ -14,38 +14,28 @@ const restaurantRouter = express.Router();
 // POST register new restaurant
 restaurantRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    return res.status(401).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
+    return res.status(400).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
   }
   if (!req.body.name) {
-    return res.status(401).send("Name is missing!");
+    return res.status(400).send("Name is missing!");
   }
   if (!req.body.address) {
-    return res.status(401).send("Address is missing!");
+    return res.status(400).send("Address is missing!");
   }
   if (!req.body.phone) {
-    return res.status(401).send("Phone number is missing!");
+    return res.status(400).send("Phone number is missing!");
   }
   if (!req.body.nip) {
-    return res.status(401).send("NIP number is missing!");
+    return res.status(400).send("NIP number is missing!");
   }
   if (!req.body.email) {
-    return res.status(401).send("E-mail is missing!");
+    return res.status(400).send("E-mail is missing!");
   }
   if (!req.body.www) {
-    return res.status(401).send("Website url is missing!");
+    return res.status(400).send("Website url is missing!");
   }
-  const data = JSON.parse(JSON.stringify(req.body));
-
-  const newRestaurant = {
-    id: Date.now(),
-    name: data.name,
-    address: data.address,
-    phone: data.phone,
-    nip: data.nip,
-    email: data.email,
-    www: data.www
-  };
-
+  
+  const newRestaurant: Restaurant = new Restaurant(JSON.parse(JSON.stringify(req.body))); 
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.find(r => r.address === newRestaurant.address)) {
@@ -69,13 +59,13 @@ restaurantRouter.get("/:name", async function (req: Request, res: Response) {
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    return res.status(400).send("There is no such restaurant!");
+    return res.status(400).send("There are no such restaurants!");
   }
 
   const specificRestaurants = savedRestaurants.filter(r => r.name === req.params.name)
 
   if(!specificRestaurants) {
-    return res.status(400).send("There is no such restaurant!");
+    return res.status(400).send("There are no such restaurants!");
   }
 
   let print = "";
@@ -108,7 +98,7 @@ restaurantRouter.get("/:id", async function (req: Request, res: Response) {
     + " Phone: " + specificRestaurant.phone  + " NIP: " + specificRestaurant.nip + " E-mail: " + specificRestaurant.email 
     + " Website: " + specificRestaurant.www + "\n";
   
-    return res.status(201).send("Restaurant: \n" + print);
+    return res.status(200).send("Restaurant: \n" + print);
   }
   else {
     return res.status(400).send("There is no such restaurant!");
@@ -120,7 +110,7 @@ restaurantRouter.get("/restaurants", async function (req: Request, res: Response
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    return res.status(400).send("There is no restaurants!");
+    return res.status(400).send("There are no restaurants!");
   }
 
   let print = "";
@@ -131,7 +121,7 @@ restaurantRouter.get("/restaurants", async function (req: Request, res: Response
     + " Website: " + savedRestaurants[i].www + "\n";
   }
 
-  return res.status(201).send("Restaurants list: \n" + print);
+  return res.status(200).send("Restaurant list: \n" + print);
 });
 
 /* PUT */
@@ -148,7 +138,7 @@ restaurantRouter.put("/:id", async function (req: Request, res: Response) {
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    return res.status(400).send("There is no restaurants!");
+    return res.status(400).send("There are no restaurants!");
   }
 
   const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.id)
@@ -201,7 +191,7 @@ restaurantRouter.delete("/:id", async function (req: Request, res: Response) {
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    return res.status(400).send("There is no restaurants!");
+    return res.status(400).send("There are no restaurants!");
   }
 
   const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.id)
