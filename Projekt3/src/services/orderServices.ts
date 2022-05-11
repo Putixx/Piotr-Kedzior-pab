@@ -109,38 +109,6 @@ export async function readOrder(searchID: number): Promise<string> {
     + savedOrders[orderIndex].table.status + " Price: " + savedOrders[orderIndex].price + "\n";
 }
 
-// Read order specified by worker ID
-export async function readOrderByWorkerID(searchID: number): Promise<string> {
-    const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
-  
-    if(savedOrders.length < 1) {
-      throw new Error("There are no orders!");
-    }
-  
-    const specificOrders = savedOrders.filter(o => o.worker.id === searchID)
-  
-    if(!specificOrders) {
-        throw new Error("There are no orders for this worker!");
-    }
-
-    let print = "";
-    let meals = "";
-      
-    for(let i = 0; i < specificOrders.length; i++) {
-        for(let j = 0; j < savedOrders[i].meals.length; j++) {
-            meals += " Meal name: " + savedOrders[i].meals[j].name + " Meal price: " + savedOrders[i].meals[j].price 
-            + " Meal category: " + savedOrders[i].meals[j].category + " ";
-        }
-      
-        print += "ID: " + savedOrders[i].id + " Worker name: " + savedOrders[i].worker.name + " Worker surname: " + savedOrders[i].worker.surname 
-        + " Worker occupation: " + savedOrders[i].worker.occupation + meals + " Status: " + savedOrders[i].status + " Table name: " 
-        + savedOrders[i].table.name + " Table number of place settings: " + savedOrders[i].table.numPlaces + " Table status: " 
-        + savedOrders[i].table.status + " Price: " + savedOrders[i].price + "\n";
-    }
-
-    return print;
-}
-
 // Update existing order specified by ID
 export async function updateOrder(data: Order, searchID: number): Promise<string> {
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];

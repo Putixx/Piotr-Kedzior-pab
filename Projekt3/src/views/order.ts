@@ -2,7 +2,7 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { createOrder, deleteOrder, readAllOrders, readOrder, readOrderByWorkerID, updateOrder } from "../services/orderServices";
+import { createOrder, deleteOrder, readAllOrders, readOrder, updateOrder } from "../services/orderServices";
 
 /* SETUP */
 
@@ -50,15 +50,6 @@ orderRouter.get("/:id", async function (req: Request, res: Response) {
   
   return res.status(200).send("Order: " + await readOrder(+req.params.id));
 });
-
-// GET registered order by worker
-orderRouter.get("/:workerid", async function (req: Request, res: Response) {
-    if (!req.params.workerid) {
-      return res.status(400).send("You need to send worker's ID!");
-    }
-    
-    return res.status(200).send("Orders: " + await readOrderByWorkerID(+req.params.workerid));
-  });
 
 /* PUT */
 

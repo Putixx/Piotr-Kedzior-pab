@@ -1,7 +1,7 @@
 import express from 'express'
-import {Request, Response, NextFunction} from 'express'
 import menuRouter from './views/menu'
 import orderRouter from './views/order'
+import orderRepRouter from './views/orderReports'
 import restaurantRouter from './views/restaurant'
 import rezervationRouter from './views/rezervation'
 import tableRouter from './views/table'
@@ -14,6 +14,7 @@ const app = express()
 app.use(express.json())
 app.use('/menu', menuRouter)
 app.use('/order', orderRouter)
+app.use('/report', orderRepRouter)
 app.use('/restaurant', restaurantRouter)
 app.use('/rezervation', rezervationRouter)
 app.use('/table', tableRouter)
