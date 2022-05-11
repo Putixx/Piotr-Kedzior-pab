@@ -2,8 +2,6 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { Table } from "../models/Table";
-import { readStorage, updateStorage } from "../services/storageService";
 import { createTable, deleteTable, readAllTables, readTable, readTableByNumOfPlaces, updateTable } from "../services/tableService";
 
 /* SETUP */

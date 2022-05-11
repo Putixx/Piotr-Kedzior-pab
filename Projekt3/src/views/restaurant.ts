@@ -2,9 +2,7 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { Restaurant } from "../models/Restaurant";
 import { createRestaurant, deleteRestaurant, readAllRestaurants, readRestaurant, readRestaurantsByName, updateRestaurant } from "../services/restaurantService";
-import { readStorage, updateStorage } from "../services/storageService";
 
 /* SETUP */
 
