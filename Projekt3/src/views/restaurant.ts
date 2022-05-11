@@ -14,25 +14,25 @@ const restaurantRouter = express.Router();
 // POST register new restaurant
 restaurantRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(401).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
+    return res.status(401).send("To register a new restaurant you need to send it's: name, address, phone, nip, email and www!");
   }
   if (!req.body.name) {
-    res.status(401).send("Name is missing!");
+    return res.status(401).send("Name is missing!");
   }
   if (!req.body.address) {
-    res.status(401).send("Address is missing!");
+    return res.status(401).send("Address is missing!");
   }
   if (!req.body.phone) {
-    res.status(401).send("Phone number is missing!");
+    return res.status(401).send("Phone number is missing!");
   }
   if (!req.body.nip) {
-    res.status(401).send("NIP number is missing!");
+    return res.status(401).send("NIP number is missing!");
   }
   if (!req.body.email) {
-    res.status(401).send("E-mail is missing!");
+    return res.status(401).send("E-mail is missing!");
   }
   if (!req.body.www) {
-    res.status(401).send("Website url is missing!");
+    return res.status(401).send("Website url is missing!");
   }
   const data = JSON.parse(JSON.stringify(req.body));
 
@@ -49,13 +49,13 @@ restaurantRouter.post("/register", async function (req: Request, res: Response) 
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.find(r => r.address === newRestaurant.address)) {
-    res.status(400).send("Current address is already taken!");
+    return res.status(400).send("Current address is already taken!");
   }
 
   savedRestaurants.push(newRestaurant);
   await updateStorage('../data/restaurants.json', JSON.stringify(savedRestaurants));
 
-  res.status(200).send("New restaurant registration succeded! It's ID: " + newRestaurant.id);
+  return res.status(200).send("New restaurant registration succeded! It's ID: " + newRestaurant.id);
 });
 
 /* GET */
@@ -63,19 +63,19 @@ restaurantRouter.post("/register", async function (req: Request, res: Response) 
 // GET registered restaurants with same name
 restaurantRouter.get("/:name", async function (req: Request, res: Response) {
   if (!req.params.name) {
-    res.status(400).send("You need to send restaurant name!");
+    return res.status(400).send("You need to send restaurant name!");
   }
 
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    res.status(400).send("There is no such restaurant!");
+    return res.status(400).send("There is no such restaurant!");
   }
 
   const specificRestaurants = savedRestaurants.filter(r => r.name === req.params.name)
 
   if(!specificRestaurants) {
-    res.status(400).send("There is no such restaurant!");
+    return res.status(400).send("There is no such restaurant!");
   }
 
   let print = "";
@@ -86,19 +86,19 @@ restaurantRouter.get("/:name", async function (req: Request, res: Response) {
     + " Website: " + specificRestaurants[i].www + "\n";
   }
 
-  res.status(201).send("Restaurants with same name: \n" + print);
+  return res.status(201).send("Restaurants with same name: \n" + print);
 });
 
 // GET registered restaurant by id
 restaurantRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send restaurant ID!");
+    return res.status(400).send("You need to send restaurant ID!");
   }
 
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    res.status(400).send("There is no such restaurant!");
+    return res.status(400).send("There is no such restaurant!");
   }
 
   const specificRestaurant = savedRestaurants.find(r => r.id === +req.params.id)
@@ -108,10 +108,10 @@ restaurantRouter.get("/:id", async function (req: Request, res: Response) {
     + " Phone: " + specificRestaurant.phone  + " NIP: " + specificRestaurant.nip + " E-mail: " + specificRestaurant.email 
     + " Website: " + specificRestaurant.www + "\n";
   
-    res.status(201).send("Restaurant: \n" + print);
+    return res.status(201).send("Restaurant: \n" + print);
   }
   else {
-    res.status(400).send("There is no such restaurant!");
+    return res.status(400).send("There is no such restaurant!");
   }
 });
 
@@ -120,7 +120,7 @@ restaurantRouter.get("/restaurants", async function (req: Request, res: Response
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    res.status(400).send("There is no restaurants!");
+    return res.status(400).send("There is no restaurants!");
   }
 
   let print = "";
@@ -131,7 +131,7 @@ restaurantRouter.get("/restaurants", async function (req: Request, res: Response
     + " Website: " + savedRestaurants[i].www + "\n";
   }
 
-  res.status(201).send("Restaurants list: \n" + print);
+  return res.status(201).send("Restaurants list: \n" + print);
 });
 
 /* PUT */
@@ -139,22 +139,22 @@ restaurantRouter.get("/restaurants", async function (req: Request, res: Response
 // EDIT registered restaurant by id
 restaurantRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
-    res.status(400).send("You need to send new data to update existing restaurant!");
+    return res.status(400).send("You need to send new data to update existing restaurant!");
   }
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    res.status(400).send("There is no restaurants!");
+    return res.status(400).send("There is no restaurants!");
   }
 
   const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.id)
 
   if(restaurantIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -187,7 +187,7 @@ restaurantRouter.put("/:id", async function (req: Request, res: Response) {
   + " NIP: " + savedRestaurants[restaurantIndex].nip + " E-mail: " + savedRestaurants[restaurantIndex].email + " Website: " + savedRestaurants[restaurantIndex].www + "\n";
 
   await updateStorage('../data/restaurants.json', JSON.stringify(savedRestaurants));
-  res.status(201).send("Restaurant before edit: " + printOld + " Restaurant after edit: " + printNew);
+  return res.status(201).send("Restaurant before edit: " + printOld + " Restaurant after edit: " + printNew);
 });
 
 /* DELETE */
@@ -195,24 +195,24 @@ restaurantRouter.put("/:id", async function (req: Request, res: Response) {
 // DELETE registered restaurant by id
 restaurantRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('../data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
-    res.status(400).send("There is no restaurants!");
+    return res.status(400).send("There is no restaurants!");
   }
 
   const restaurantIndex = savedRestaurants.findIndex(r => r.id === +req.params.id)
 
   if(restaurantIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   savedRestaurants.splice(restaurantIndex, 1);
   await updateStorage('../data/restaurants.json', JSON.stringify(savedRestaurants));
-  res.status(201).send("Restaurant successfuly removed!");
+  return res.status(201).send("Restaurant successfuly removed!");
 });
 
 export default restaurantRouter;

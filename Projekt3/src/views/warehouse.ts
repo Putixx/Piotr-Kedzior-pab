@@ -14,19 +14,19 @@ const warehouseRouter = express.Router();
 // POST register new product
 warehouseRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(401).send("To register a new product you need to send it's: name, price, quantity and unit of measure!");
+    return res.status(401).send("To register a new product you need to send it's: name, price, quantity and unit of measure!");
   }
   if (!req.body.name) {
-    res.status(401).send("Name is missing!");
+    return res.status(401).send("Name is missing!");
   }
   if (!req.body.price) {
-    res.status(401).send("Price is missing!");
+    return res.status(401).send("Price is missing!");
   }
   if (!req.body.quantity) {
-    res.status(401).send("Quantity is missing!");
+    return res.status(401).send("Quantity is missing!");
   }
   if (!req.body.unitOfMeasure) {
-    res.status(401).send("Unit of measure is missing!");
+    return res.status(401).send("Unit of measure is missing!");
   }
   if(req.body.unitOfMeasure === 'g' || req.body.unitOfMeasure === 'dg' || req.body.unitOfMeasure === 'kg' || req.body.unitOfMeasure === 't') {
     const data = JSON.parse(JSON.stringify(req.body));
@@ -42,15 +42,15 @@ warehouseRouter.post("/register", async function (req: Request, res: Response) {
   const savedProducts: Product[] = JSON.parse(await readStorage('../data/products.json')) ?? [];
 
   if(savedProducts.find(p => p.name === newProduct.name && p.price === newProduct.price && p.quantity === newProduct.quantity && p.unitOfMeasure === newProduct.unitOfMeasure)) {
-    res.status(400).send("Current product is already registered!");
+    return res.status(400).send("Current product is already registered!");
   }
 
   savedProducts.push(newProduct);
   await updateStorage('../data/products.json', JSON.stringify(savedProducts));
-  res.status(200).send("New Product registration succeded! It's ID: " + newProduct.id);
+  return res.status(200).send("New Product registration succeded! It's ID: " + newProduct.id);
   }
   else {
-    res.status(401).send("Units of measure available: g, dg, kg, t!");
+    return res.status(401).send("Units of measure available: g, dg, kg, t!");
   }
 });
 
@@ -61,7 +61,7 @@ warehouseRouter.get("/products", async function (req: Request, res: Response) {
   const savedProducts: Product[] = JSON.parse(await readStorage('../data/products.json')) ?? [];
 
   if(savedProducts.length < 1) {
-    res.status(400).send("There is no products!");
+    return res.status(400).send("There is no products!");
   }
 
   let print = "";
@@ -71,18 +71,18 @@ warehouseRouter.get("/products", async function (req: Request, res: Response) {
     + " Quantity: " + savedProducts[i].quantity + " Unit of measure: " + savedProducts[i].unitOfMeasure + "\n";
   }
 
-  res.status(201).send("List of products: \n" + print);
+  return res.status(201).send("List of products: \n" + print);
 });
 
 // GET registered products
 warehouseRouter.get("/:sort", async function (req: Request, res: Response) {
     if(!req.params.sort) {
-        res.status(400).send("Sort param needed! Possible: ID, name, price, quantity");
+        return res.status(400).send("Sort param needed! Possible: ID, name, price, quantity");
     }
     const savedProducts: Product[] = JSON.parse(await readStorage('../data/products.json')) ?? [];
   
     if(savedProducts.length < 1) {
-      res.status(400).send("There is no products!");
+      return res.status(400).send("There is no products!");
     }
     let print = "";
 
@@ -144,31 +144,31 @@ warehouseRouter.get("/:sort", async function (req: Request, res: Response) {
       + " Quantity: " + savedProducts[i].quantity + " Unit of measure: " + savedProducts[i].unitOfMeasure + "\n";
     }
   
-    res.status(201).send("List of products: \n" + print);
+    return res.status(201).send("List of products: \n" + print);
   });
 
 // GET registered product by id
 warehouseRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedProducts: Product[] = JSON.parse(await readStorage('../data/products.json')) ?? [];
 
   if(savedProducts.length < 1) {
-    res.status(400).send("There is no products!");
+    return res.status(400).send("There is no products!");
   }
 
   const productIndex = savedProducts.findIndex(p => p.id === +req.params.id)
 
   if(productIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const print = "ID: " + savedProducts[productIndex].id + " Name: " + savedProducts[productIndex].name + " Price: " + savedProducts[productIndex].price 
   + " Quantity: " + savedProducts[productIndex].quantity + " Unit of measure: " + savedProducts[productIndex].unitOfMeasure + "\n";
 
-  res.status(201).send("Product before edit: " + print);
+  return res.status(201).send("Product before edit: " + print);
 });
 
 /* PUT */
@@ -176,22 +176,22 @@ warehouseRouter.get("/:id", async function (req: Request, res: Response) {
 // EDIT registered product by id
 warehouseRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
-    res.status(400).send("You need to send new data to update existing product!");
+    return res.status(400).send("You need to send new data to update existing product!");
   }
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedProducts: Product[] = JSON.parse(await readStorage('../data/products.json')) ?? [];
 
   if(savedProducts.length < 1) {
-    res.status(400).send("There is no products!");
+    return res.status(400).send("There is no products!");
   }
 
   const productIndex = savedProducts.findIndex(p => p.id === +req.params.id)
 
   if(productIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -217,7 +217,7 @@ warehouseRouter.put("/:id", async function (req: Request, res: Response) {
   + " Quantity: " + savedProducts[productIndex].quantity + " Unit of measure: " + savedProducts[productIndex].unitOfMeasure + "\n";
 
   await updateStorage('../data/products.json', JSON.stringify(savedProducts));
-  res.status(201).send("Product before edit: " + printOld + " Product after edit: " + printNew);
+  return res.status(201).send("Product before edit: " + printOld + " Product after edit: " + printNew);
 });
 
 /* DELETE */
@@ -225,24 +225,24 @@ warehouseRouter.put("/:id", async function (req: Request, res: Response) {
 // DELETE registered product by id
 warehouseRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedProducts: Product[] = JSON.parse(await readStorage('../data/products.json')) ?? [];
 
   if(savedProducts.length < 1) {
-    res.status(400).send("There is no products!");
+    return res.status(400).send("There is no products!");
   }
 
   const productIndex = savedProducts.findIndex(p => p.id === +req.params.id)
 
   if(productIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   savedProducts.splice(productIndex, 1);
   await updateStorage('../data/products.json', JSON.stringify(savedProducts));
-  res.status(201).send("Product successfuly removed!");
+  return res.status(201).send("Product successfuly removed!");
 });
 
 export default warehouseRouter;

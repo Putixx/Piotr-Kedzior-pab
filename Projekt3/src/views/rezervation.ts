@@ -14,19 +14,19 @@ const rezervationRouter = express.Router();
 // POST register new rezervation
 rezervationRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(401).send("To register a new rezervation you need to send it's: table, start time, end time and client!");
+    return res.status(401).send("To register a new rezervation you need to send it's: table, start time, end time and client!");
   }
   if (!req.body.table) {
-    res.status(401).send("Table is missing!");
+    return res.status(401).send("Table is missing!");
   }
   if (!req.body.start) {
-    res.status(401).send("Start time is missing!");
+    return res.status(401).send("Start time is missing!");
   }
   if (!req.body.end) {
-    res.status(401).send("End time is missing!");
+    return res.status(401).send("End time is missing!");
   }
   if (!req.body.client) {
-    res.status(401).send("Client data is missing!");
+    return res.status(401).send("Client data is missing!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -43,13 +43,13 @@ rezervationRouter.post("/register", async function (req: Request, res: Response)
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervations.json')) ?? [];
 
   if(savedRezervations.find(r => r.table === newRezervation.table)) {
-    res.status(400).send("Current table is already reserved!");
+    return res.status(400).send("Current table is already reserved!");
   }
 
   savedRezervations.push(newRezervation);
   await updateStorage('../data/rezervations.json', JSON.stringify(savedRezervations));
 
-  res.status(200).send("New rezervation registration succeded! It's ID: " + newRezervation.id);
+  return res.status(200).send("New rezervation registration succeded! It's ID: " + newRezervation.id);
 });
 
 /* GET */
@@ -59,7 +59,7 @@ rezervationRouter.get("/rezervations", async function (req: Request, res: Respon
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervations.json')) ?? [];
 
   if(savedRezervations.length < 1) {
-    res.status(400).send("There is no rezervations!");
+    return res.status(400).send("There is no rezervations!");
   }
 
   let print = "";
@@ -69,31 +69,31 @@ rezervationRouter.get("/rezervations", async function (req: Request, res: Respon
     + " End: " + savedRezervations[i].end + " Client: " + savedRezervations[i].client + "\n";
   }
 
-  res.status(201).send("List of rezervations: \n" + print);
+  return res.status(201).send("List of rezervations: \n" + print);
 });
 
 // GET registered rezervation by id
 rezervationRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervation.json')) ?? [];
 
   if(savedRezervations.length < 1) {
-    res.status(400).send("There is no rezervations!");
+    return res.status(400).send("There is no rezervations!");
   }
 
   const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
 
   if(reservationIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const print = "ID: " + savedRezervations[reservationIndex].id + " Table: " + savedRezervations[reservationIndex].table + " Start: " + savedRezervations[reservationIndex].start 
   + " End: " + savedRezervations[reservationIndex].end + " Client: " + savedRezervations[reservationIndex].client + "\n";
 
-  res.status(201).send("Reservation: " + print);
+  return res.status(201).send("Reservation: " + print);
 });
 
 /* PUT */
@@ -101,22 +101,22 @@ rezervationRouter.get("/:id", async function (req: Request, res: Response) {
 // EDIT registered rezervation by id
 rezervationRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
-    res.status(400).send("You need to send new data to update existing rezervation!");
+    return res.status(400).send("You need to send new data to update existing rezervation!");
   }
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervation.json')) ?? [];
 
   if(savedRezervations.length < 1) {
-    res.status(400).send("There is no rezervations!");
+    return res.status(400).send("There is no rezervations!");
   }
 
   const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
 
   if(reservationIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -142,7 +142,7 @@ rezervationRouter.put("/:id", async function (req: Request, res: Response) {
   + " End: " + savedRezervations[reservationIndex].end + " Client: " + savedRezervations[reservationIndex].client + "\n";
 
   await updateStorage('../data/rezervations.json', JSON.stringify(savedRezervations));
-  res.status(201).send("Rezervation before edit: " + printOld + " Rezervation after edit: " + printNew);
+  return res.status(201).send("Rezervation before edit: " + printOld + " Rezervation after edit: " + printNew);
 });
 
 /* DELETE */
@@ -150,24 +150,24 @@ rezervationRouter.put("/:id", async function (req: Request, res: Response) {
 // DELETE registered rezervation by id
 rezervationRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervations.json')) ?? [];
 
   if(savedRezervations.length < 1) {
-    res.status(400).send("There is no rezervations!");
+    return res.status(400).send("There is no rezervations!");
   }
 
   const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
 
   if(reservationIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   savedRezervations.splice(reservationIndex, 1);
   await updateStorage('../data/rezervations.json', JSON.stringify(savedRezervations));
-  res.status(201).send("Rezervation successfuly removed!");
+  return res.status(201).send("Rezervation successfuly removed!");
 });
 
 export default rezervationRouter;

@@ -14,16 +14,16 @@ const workerRouter = express.Router();
 // POST register new worker
 workerRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(401).send("To register a new worker you need to send it's: name, surname and occupation!");
+    return res.status(401).send("To register a new worker you need to send it's: name, surname and occupation!");
   }
   if (!req.body.name) {
-    res.status(401).send("Name is missing!");
+    return res.status(401).send("Name is missing!");
   }
   if (!req.body.surname) {
-    res.status(401).send("Surname is missing!");
+    return res.status(401).send("Surname is missing!");
   }
   if (!req.body.occupation) {
-    res.status(401).send("Occupation is missing!");
+    return res.status(401).send("Occupation is missing!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -38,13 +38,13 @@ workerRouter.post("/register", async function (req: Request, res: Response) {
   const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
 
   if(savedWorkers.find(w => w.name === newWorker.name && w.surname === newWorker.surname && w.occupation === newWorker.occupation)) {
-    res.status(400).send("Current worker is already registered!");
+    return res.status(400).send("Current worker is already registered!");
   }
 
   savedWorkers.push(newWorker);
   await updateStorage('../data/workers.json', JSON.stringify(savedWorkers));
 
-  res.status(200).send("New worker registration succeded! It's ID: " + newWorker.id);
+  return res.status(200).send("New worker registration succeded! It's ID: " + newWorker.id);
 });
 
 /* GET */
@@ -54,7 +54,7 @@ workerRouter.get("/workers", async function (req: Request, res: Response) {
   const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
-    res.status(400).send("There is no workers!");
+    return res.status(400).send("There is no workers!");
   }
 
   let print = "";
@@ -64,31 +64,31 @@ workerRouter.get("/workers", async function (req: Request, res: Response) {
     + " Occupation: " + savedWorkers[i].occupation + "\n";
   }
 
-  res.status(201).send("List of workers: \n" + print);
+  return res.status(201).send("List of workers: \n" + print);
 });
 
 // GET registered worker by id
 workerRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
-    res.status(400).send("There is no workers!");
+    return res.status(400).send("There is no workers!");
   }
 
   const workerIndex = savedWorkers.findIndex(w => w.id === +req.params.id)
 
   if(workerIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const print = "ID: " + savedWorkers[workerIndex].id + " Name: " + savedWorkers[workerIndex].name + " Surname: " + savedWorkers[workerIndex].surname 
   + " Occupation: " + savedWorkers[workerIndex].occupation + "\n";
 
-  res.status(201).send("Worker: " + print);
+  return res.status(201).send("Worker: " + print);
 });
 
 /* PUT */
@@ -96,22 +96,22 @@ workerRouter.get("/:id", async function (req: Request, res: Response) {
 // EDIT registered worker by id
 workerRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
-    res.status(400).send("You need to send new data to update existing worker!");
+    return res.status(400).send("You need to send new data to update existing worker!");
   }
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
-    res.status(400).send("There is no workers!");
+    return res.status(400).send("There is no workers!");
   }
 
   const workerIndex = savedWorkers.findIndex(w => w.id === +req.params.id)
 
   if(workerIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -134,7 +134,7 @@ workerRouter.put("/:id", async function (req: Request, res: Response) {
   + savedWorkers[workerIndex].surname + " Occupation: " + savedWorkers[workerIndex].occupation + "\n";
 
   await updateStorage('../data/workers.json', JSON.stringify(savedWorkers));
-  res.status(201).send("Worker before edit: " + printOld + " Worker after edit: " + printNew);
+  return res.status(201).send("Worker before edit: " + printOld + " Worker after edit: " + printNew);
 });
 
 /* DELETE */
@@ -142,24 +142,24 @@ workerRouter.put("/:id", async function (req: Request, res: Response) {
 // DELETE registered worker by id
 workerRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
-    res.status(400).send("There is no workers!");
+    return res.status(400).send("There is no workers!");
   }
 
   const workerIndex = savedWorkers.findIndex(w => w.id === +req.params.id)
 
   if(workerIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   savedWorkers.splice(workerIndex, 1);
   await updateStorage('../data/workers.json', JSON.stringify(savedWorkers));
-  res.status(201).send("Worker successfuly removed!");
+  return res.status(201).send("Worker successfuly removed!");
 });
 
 export default workerRouter;

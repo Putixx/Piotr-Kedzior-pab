@@ -14,19 +14,19 @@ const orderRouter = express.Router();
 // POST register new order
 orderRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(400).send("To register a new order you need to send it's: worker, meals, status, table and price!");
+    return res.status(400).send("To register a new order you need to send it's: worker, meals, status, table and price!");
   }
   if (!req.body.worker) {
-    res.status(400).send("Worker is missing!");
+    return res.status(400).send("Worker is missing!");
   }
   if (!req.body.meals) {
-    res.status(400).send("Meals are missing!");
+    return res.status(400).send("Meals are missing!");
   }
   if (!req.body.status) {
-    res.status(400).send("Status is missing!");
+    return res.status(400).send("Status is missing!");
   }
   if (!req.body.table) {
-    res.status(400).send("Table is missing!");
+    return res.status(400).send("Table is missing!");
   }
   if(req.body.status === 'ordered' || req.body.status === 'inprogress' || req.body.status === 'realized' || req.body.status === 'bill') {
     const data = JSON.parse(JSON.stringify(req.body));
@@ -48,16 +48,16 @@ orderRouter.post("/register", async function (req: Request, res: Response) {
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
     if(savedOrders.find(o => o.worker === newOrder.worker &&  o.meals === newOrder.meals &&  o.table === newOrder.table && o.price === newOrder.price)) {
-        res.status(400).send("Current order is already registered!");
+        return res.status(400).send("Current order is already registered!");
     }
 
     savedOrders.push(newOrder);
     await updateStorage('./data/orders.json', JSON.stringify(savedOrders));
 
-    res.status(200).send("New order registration succeded! It's ID: " + newOrder.id);
+    return res.status(200).send("New order registration succeded! It's ID: " + newOrder.id);
     }
     else {
-        res.status(400).send("Statuses available: ordered, inprogress, realized, bill!");
+        return res.status(400).send("Statuses available: ordered, inprogress, realized, bill!");
     }
 });
 
@@ -68,7 +68,7 @@ orderRouter.get("/orders", async function (req: Request, res: Response) {
   const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
   if(savedOrders.length < 1) {
-    res.status(400).send("There is no orders!");
+    return res.status(400).send("There is no orders!");
   }
 
   let print = "";
@@ -85,25 +85,25 @@ orderRouter.get("/orders", async function (req: Request, res: Response) {
     + savedOrders[i].table.status + " Price: " + savedOrders[i].price + "\n";
   }
 
-  res.status(201).send("List of orders: \n" + print);
+  return res.status(201).send("List of orders: \n" + print);
 });
 
 // GET registered order by id
 orderRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
   if(savedOrders.length < 1) {
-    res.status(400).send("There is no orders!");
+    return res.status(400).send("There is no orders!");
   }
 
   const orderIndex = savedOrders.findIndex(o => o.id === +req.params.id)
 
   if(orderIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   let meals = "";
@@ -117,22 +117,22 @@ orderRouter.get("/:id", async function (req: Request, res: Response) {
   + savedOrders[orderIndex].table.name + " Table number of place settings: " + savedOrders[orderIndex].table.numPlaces + " Table status: " 
   + savedOrders[orderIndex].table.status + " Price: " + savedOrders[orderIndex].price + "\n";
 
-  res.status(201).send("Order: " + print);
+  return res.status(201).send("Order: " + print);
 });
 
 // GET registered order by worker
 orderRouter.get("/:name/:surname", async function (req: Request, res: Response) {
     if (!req.params.name) {
-      res.status(400).send("You need to send worker's name!");
+      return res.status(400).send("You need to send worker's name!");
     }
     if (!req.params.surname) {
-      res.status(400).send("You need to send worker's surname!");
+      return res.status(400).send("You need to send worker's surname!");
     }
     
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
   
     if(savedOrders.length < 1) {
-      res.status(400).send("There is no orders!");
+      return res.status(400).send("There is no orders!");
     }
   
     const specificOrders = savedOrders.filter(o => o.worker.name === req.params.name && o.worker.surname === req.params.surname)
@@ -152,10 +152,10 @@ orderRouter.get("/:name/:surname", async function (req: Request, res: Response) 
           + savedOrders[i].table.status + " Price: " + savedOrders[i].price + "\n";
           }
 
-        res.status(201).send("Orders: " + print);
+        return res.status(201).send("Orders: " + print);
     }
     else {
-        res.status(400).send("There is no orders for this worker!");
+        return res.status(400).send("There is no orders for this worker!");
     }
   });
 
@@ -164,22 +164,22 @@ orderRouter.get("/:name/:surname", async function (req: Request, res: Response) 
 // EDIT registered order by id
 orderRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
-    res.status(400).send("You need to send new data to update existing order!");
+    return res.status(400).send("You need to send new data to update existing order!");
   }
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
   if(savedOrders.length < 1) {
-    res.status(400).send("There is no orders!");
+    return res.status(400).send("There is no orders!");
   }
 
   const orderIndex = savedOrders.findIndex(o => o.id === +req.params.id)
 
   if(orderIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -220,7 +220,7 @@ orderRouter.put("/:id", async function (req: Request, res: Response) {
   + savedOrders[orderIndex].table.status + " Price: " + savedOrders[orderIndex].price + "\n";
 
   await updateStorage('./data/orders.json', JSON.stringify(savedOrders));
-  res.status(201).send("Order before edit: " + printOld + " Order after edit: " + printNew);
+  return res.status(201).send("Order before edit: " + printOld + " Order after edit: " + printNew);
 });
 
 /* DELETE */
@@ -228,24 +228,24 @@ orderRouter.put("/:id", async function (req: Request, res: Response) {
 // DELETE registered order by id
 orderRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
   if(savedOrders.length < 1) {
-    res.status(400).send("There is no orders!");
+    return res.status(400).send("There is no orders!");
   }
 
   const orderIndex = savedOrders.findIndex(o => o.id === +req.params.id)
 
   if(orderIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   savedOrders.splice(orderIndex, 1);
   await updateStorage('./data/orders.json', JSON.stringify(savedOrders));
-  res.status(201).send("Order successfuly removed!");
+  return res.status(201).send("Order successfuly removed!");
 });
 
 export default orderRouter;

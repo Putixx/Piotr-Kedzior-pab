@@ -14,16 +14,16 @@ const tableRouter = express.Router();
 // POST register new table
 tableRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    res.status(400).send("To register a new table you need to send it's: name, number of place settings and status!");
+    return res.status(400).send("To register a new table you need to send it's: name, number of place settings and status!");
   }
   if (!req.body.name) {
-    res.status(400).send("Name is missing!");
+    return res.status(400).send("Name is missing!");
   }
   if (!req.body.numPlaces) {
-    res.status(400).send("Number of place settings is missing!");
+    return res.status(400).send("Number of place settings is missing!");
   }
   if (!req.body.status) {
-    res.status(400).send("Status is missing!");
+    return res.status(400).send("Status is missing!");
   }
   if(req.body.status === 'free' || req.body.status === 'taken' || req.body.status === 'unavailable') {
     const data = JSON.parse(JSON.stringify(req.body));
@@ -38,16 +38,16 @@ tableRouter.post("/register", async function (req: Request, res: Response) {
     const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
   
     if(savedTables.find(t => t.name === newTable.name)) {
-      res.status(400).send("Current table is already registered!");
+      return res.status(400).send("Current table is already registered!");
     }
   
     savedTables.push(newTable);
     await updateStorage('../data/tables.json', JSON.stringify(savedTables));
   
-    res.status(200).send("New table registration succeded! It's ID: " + newTable.id);
+    return res.status(200).send("New table registration succeded! It's ID: " + newTable.id);
   }
   else {
-    res.status(401).send("Statuses available: free, taken, unavailable!");
+    return res.status(401).send("Statuses available: free, taken, unavailable!");
   }
 });
 
@@ -58,13 +58,13 @@ tableRouter.get("/tables/:numPlaces", async function (req: Request, res: Respons
   const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
-    res.status(400).send("There is no such tables!");
+    return res.status(400).send("There is no such tables!");
   }
 
   const specificTables = savedTables.filter(t => t.numPlaces === +req.params.numPlaces && t.status === 'free');
 
   if(!specificTables) {
-    res.status(400).send("There is no such tables!");
+    return res.status(400).send("There is no such tables!");
   }
 
   let print = "";
@@ -74,7 +74,7 @@ tableRouter.get("/tables/:numPlaces", async function (req: Request, res: Respons
     + " Status: " + specificTables[i].status + "\n";
   }
 
-  res.status(201).send("Free tables with specific number of place settings: \n" + print);
+  return res.status(201).send("Free tables with specific number of place settings: \n" + print);
 });
 
 // GET registered tables
@@ -82,7 +82,7 @@ tableRouter.get("/tables", async function (req: Request, res: Response) {
   const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
-    res.status(400).send("There is no tables!");
+    return res.status(400).send("There is no tables!");
   }
 
   let print = "";
@@ -92,31 +92,31 @@ tableRouter.get("/tables", async function (req: Request, res: Response) {
     + " Status: " + savedTables[i].status + "\n";
   }
 
-  res.status(201).send("List of tables: \n" + print);
+  return res.status(201).send("List of tables: \n" + print);
 });
 
 // GET registered table by id
 tableRouter.get("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
-    res.status(400).send("There is no tables!");
+    return res.status(400).send("There is no tables!");
   }
 
   const tableIndex = savedTables.findIndex(t => t.id === +req.params.id)
 
   if(tableIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const print = "ID: " + savedTables[tableIndex].id + " Name: " + savedTables[tableIndex].name + " Number of place settings: " 
   + savedTables[tableIndex].numPlaces + " Status: " + savedTables[tableIndex].status + "\n";
 
-  res.status(201).send("Table before edit: " + print);
+  return res.status(201).send("Table before edit: " + print);
 });
 
 /* PUT */
@@ -124,22 +124,22 @@ tableRouter.get("/:id", async function (req: Request, res: Response) {
 // EDIT registered tables by id
 tableRouter.put("/:id", async function (req: Request, res: Response) {
   if(!req.body) {
-    res.status(400).send("You need to send new data to update existing table!");
+    return res.status(400).send("You need to send new data to update existing table!");
   }
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
-    res.status(400).send("There is no tables!");
+    return res.status(400).send("There is no tables!");
   }
 
   const tableIndex = savedTables.findIndex(t => t.id === +req.params.id)
 
   if(tableIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   const data = JSON.parse(JSON.stringify(req.body));
@@ -162,7 +162,7 @@ tableRouter.put("/:id", async function (req: Request, res: Response) {
   + savedTables[tableIndex].numPlaces + " Status: " + savedTables[tableIndex].status + "\n";
 
   await updateStorage('../data/tables.json', JSON.stringify(savedTables));
-  res.status(201).send("Table before edit: " + printOld + " Table after edit: " + printNew);
+  return res.status(201).send("Table before edit: " + printOld + " Table after edit: " + printNew);
 });
 
 /* DELETE */
@@ -170,24 +170,24 @@ tableRouter.put("/:id", async function (req: Request, res: Response) {
 // DELETE registered table by id
 tableRouter.delete("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
-    res.status(400).send("You need to send ID!");
+    return res.status(400).send("You need to send ID!");
   }
   
   const savedTables: Table[] = JSON.parse(await readStorage('../data/tables.json')) ?? [];
 
   if(savedTables.length < 1) {
-    res.status(400).send("There is no tables!");
+    return res.status(400).send("There is no tables!");
   }
 
   const tableIndex = savedTables.findIndex(t => t.id === +req.params.id)
 
   if(tableIndex === -1) {
-    res.status(400).send("Wrong ID!");
+    return res.status(400).send("Wrong ID!");
   }
 
   savedTables.splice(tableIndex, 1);
   await updateStorage('../data/tables.json', JSON.stringify(savedTables));
-  res.status(201).send("Table successfuly removed!");
+  return res.status(201).send("Table successfuly removed!");
 });
 
 export default tableRouter;
