@@ -19,6 +19,16 @@ export async function createProduct(data: Product): Promise<number> {
     return newProduct.id;
 }
 
+// Create new product needed
+export async function createProductNeed(data: Product): Promise<number> {
+    const newProduct = new Product(data);
+    const savedProducts: Product[] = JSON.parse(await readStorage('./data/productsToOrder.json')) ?? [];
+
+    savedProducts.push(newProduct);
+    await updateStorage('./data/productsToOrder.json', JSON.stringify(savedProducts));
+    return newProduct.id;
+}
+
 // Read all products
 export async function readAllProducts(): Promise<string> {
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];

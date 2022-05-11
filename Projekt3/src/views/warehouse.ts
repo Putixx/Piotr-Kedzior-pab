@@ -2,7 +2,7 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { createProduct, deleteProduct, readAllProducts, readAllProductsSorted, readProduct, updateProduct } from "../services/warehouseService";
+import { createProduct, createProductNeed, deleteProduct, readAllProducts, readAllProductsSorted, readProduct, updateProduct } from "../services/warehouseService";
 
 /* SETUP */
 
@@ -30,6 +30,32 @@ warehouseRouter.post("/register", async function (req: Request, res: Response) {
   if(req.body.unitOfMeasure === 'g' || req.body.unitOfMeasure === 'dg' || req.body.unitOfMeasure === 'kg' || req.body.unitOfMeasure === 't') {
     
     return res.status(201).send("New Product registration succeded! It's ID: " + await createProduct(JSON.parse(JSON.stringify(req.body))));
+  }
+  else {
+    return res.status(400).send("Units of measure available: g, dg, kg, t!");
+  }
+});
+
+// POST register new product
+warehouseRouter.post("/need", async function (req: Request, res: Response) {
+  if (!req.body) {
+    return res.status(400).send("To register a new needed product you need to send it's: name, price, quantity and unit of measure!");
+  }
+  if (!req.body.name) {
+    return res.status(400).send("Name is missing!");
+  }
+  if (!req.body.price) {
+    return res.status(400).send("Price is missing!");
+  }
+  if (!req.body.quantity) {
+    return res.status(400).send("Quantity is missing!");
+  }
+  if (!req.body.unitOfMeasure) {
+    return res.status(400).send("Unit of measure is missing!");
+  }
+  if(req.body.unitOfMeasure === 'g' || req.body.unitOfMeasure === 'dg' || req.body.unitOfMeasure === 'kg' || req.body.unitOfMeasure === 't') {
+    
+    return res.status(201).send("New needed product registration succeded! It's ID: " + await createProductNeed(JSON.parse(JSON.stringify(req.body))));
   }
   else {
     return res.status(400).send("Units of measure available: g, dg, kg, t!");
