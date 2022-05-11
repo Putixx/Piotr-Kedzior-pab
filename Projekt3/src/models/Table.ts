@@ -1,4 +1,4 @@
-enum TableStatus { free = 'free', taken = 'taken', unavailable = 'unavailable'}
+export enum TableStatus { free = 'free', taken = 'taken', unavailable = 'unavailable'}
 
 export class Table
 {
