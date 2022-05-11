@@ -29,17 +29,7 @@ rezervationRouter.post("/register", async function (req: Request, res: Response)
     return res.status(401).send("Client data is missing!");
   }
 
-  const data = JSON.parse(JSON.stringify(req.body));
-
-
-  const newRezervation = {
-    id: Date.now(),
-    table: data.table,
-    start: data.start,
-    end: data.end,
-    client: data.client
-  };
-
+  const newRezervation: Rezervation = new Rezervation(JSON.parse(JSON.stringify(req.body)));
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervations.json')) ?? [];
 
   if(savedRezervations.find(r => r.table === newRezervation.table)) {
@@ -59,7 +49,7 @@ rezervationRouter.get("/rezervations", async function (req: Request, res: Respon
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervations.json')) ?? [];
 
   if(savedRezervations.length < 1) {
-    return res.status(400).send("There is no rezervations!");
+    return res.status(400).send("There are no rezervations!");
   }
 
   let print = "";
@@ -81,7 +71,7 @@ rezervationRouter.get("/:id", async function (req: Request, res: Response) {
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervation.json')) ?? [];
 
   if(savedRezervations.length < 1) {
-    return res.status(400).send("There is no rezervations!");
+    return res.status(400).send("There are no rezervations!");
   }
 
   const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
@@ -110,7 +100,7 @@ rezervationRouter.put("/:id", async function (req: Request, res: Response) {
   const savedRezervations: Rezervation[] = JSON.parse(await readStorage('../data/rezervation.json')) ?? [];
 
   if(savedRezervations.length < 1) {
-    return res.status(400).send("There is no rezervations!");
+    return res.status(400).send("There are no rezervations!");
   }
 
   const reservationIndex = savedRezervations.findIndex(r => r.id === +req.params.id)
