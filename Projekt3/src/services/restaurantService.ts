@@ -136,16 +136,16 @@ export async function updateRestaurant(data: Restaurant, searchID: number): Prom
 export async function deleteRestaurant(searchID: number): Promise<void> {
     const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('./data/restaurants.json')) ?? [];
 
-  if(savedRestaurants.length < 1) {
-    throw new Error("There are no restaurants!");
-  }
+    if(savedRestaurants.length < 1) {
+      throw new Error("There are no restaurants!");
+    }
 
-  const restaurantIndex = savedRestaurants.findIndex(r => r.id === searchID)
+    const restaurantIndex = savedRestaurants.findIndex(r => r.id === searchID)
 
-  if(restaurantIndex === -1) {
-    throw new Error("Wrong ID!");
-  }
+    if(restaurantIndex === -1) {
+      throw new Error("Wrong ID!");
+    }
 
-  savedRestaurants.splice(restaurantIndex, 1);
-  await updateStorage('./data/restaurants.json', JSON.stringify(savedRestaurants));
+    savedRestaurants.splice(restaurantIndex, 1);
+    await updateStorage('./data/restaurants.json', JSON.stringify(savedRestaurants));
 }
