@@ -1,8 +1,6 @@
-export {Table};
-
 enum TableStatus { free = 'free', taken = 'taken', unavailable = 'unavailable'}
 
-class Table
+export class Table
 {
     id:number;
     name:string;

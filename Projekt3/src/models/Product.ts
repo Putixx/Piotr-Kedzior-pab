@@ -1,8 +1,6 @@
-export {Product};
-
 enum UnitOfMeasure { gram = 'g', dekagram = 'dg', kilogram = 'kg', tona = 't'}
 
-class Product
+export class Product
 {
     id:number;
     name:string;

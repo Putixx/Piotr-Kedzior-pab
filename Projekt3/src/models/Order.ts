@@ -2,11 +2,9 @@ import {Table} from './Table'
 import {Worker} from './Worker'
 import {Meal} from './Meal'
 
-export {Order};
-
 enum OrderStatus { ordered = 'ordered', inprogress = 'inprogress', realized = 'realized', bill = 'bill'}
 
-class Order
+export class Order
 {
     id:number;
     worker:Worker;

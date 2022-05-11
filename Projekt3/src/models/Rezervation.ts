@@ -1,9 +1,6 @@
 import {Table} from './Table'
 
-export {Rezervation};
-
-
-class Rezervation
+export class Rezervation
 {
     id:number;
     table:Table;

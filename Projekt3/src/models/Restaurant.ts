@@ -1,7 +1,4 @@
-export {Restaurant};
-
-
-class Restaurant
+export class Restaurant
 {
     id:number;
     name:string;

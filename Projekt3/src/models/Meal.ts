@@ -1,7 +1,4 @@
-export {Meal};
-
-
-class Meal
+export class Meal
 {
     id:number;
     name:string;

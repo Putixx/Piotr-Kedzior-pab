@@ -1,7 +1,4 @@
-export {Worker};
-
-
-class Worker
+export class Worker
 {
     id:number;
     name:string;
