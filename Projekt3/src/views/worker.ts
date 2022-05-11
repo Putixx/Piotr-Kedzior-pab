@@ -2,7 +2,7 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { createWorker, readAllWorkers, readWorker, updateWorker } from "../services/workerService";
+import { createWorker, deleteWorker, readAllWorkers, readWorker, updateWorker } from "../services/workerService";
 
 /* SETUP */
 
@@ -66,6 +66,7 @@ workerRouter.delete("/:id", async function (req: Request, res: Response) {
     return res.status(400).send("You need to send ID!");
   }
   
+  await deleteWorker(+req.params.id);
   return res.status(200).send("Worker successfuly removed!");
 });
 

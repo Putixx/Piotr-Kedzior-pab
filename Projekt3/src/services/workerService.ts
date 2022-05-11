@@ -39,7 +39,7 @@ export async function readAllWorkers(): Promise<string> {
 
 // Read worker specified by ID
 export async function readWorker(searchID: number): Promise<string> {
-    const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
+    const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
     throw new Error("There is no workers!");
@@ -57,7 +57,7 @@ export async function readWorker(searchID: number): Promise<string> {
 
 // Update existing worker specified by ID
 export async function updateWorker(data: Worker, searchID: number): Promise<string> {
-    const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
+    const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
     if(savedWorkers.length < 1) {
         throw new Error("There is no workers!");
@@ -85,13 +85,13 @@ export async function updateWorker(data: Worker, searchID: number): Promise<stri
     const printNew = "ID: " + savedWorkers[workerIndex].id + " Name: " + savedWorkers[workerIndex].name + " Surname: " 
     + savedWorkers[workerIndex].surname + " Occupation: " + savedWorkers[workerIndex].occupation + "\n";
 
-    await updateStorage('../data/workers.json', JSON.stringify(savedWorkers));
+    await updateStorage('./data/workers.json', JSON.stringify(savedWorkers));
     return printOld + printNew;
 }
 
 // Delete existing worker specified by ID
 export async function deleteWorker(searchID: number): Promise<void> {
-    const savedWorkers: Worker[] = JSON.parse(await readStorage('../data/workers.json')) ?? [];
+    const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
     throw new Error("There is no workers!");
@@ -104,5 +104,5 @@ export async function deleteWorker(searchID: number): Promise<void> {
   }
 
   savedWorkers.splice(workerIndex, 1);
-  await updateStorage('../data/workers.json', JSON.stringify(savedWorkers));
+  await updateStorage('./data/workers.json', JSON.stringify(savedWorkers));
 }
