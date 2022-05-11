@@ -83,7 +83,7 @@ orderRouter.delete("/:id", async function (req: Request, res: Response) {
   }
   
   await deleteOrder(+req.params.id);
-  return res.status(201).send("Order successfuly removed!");
+  return res.status(200).send("Order successfuly removed!");
 });
 
 export default orderRouter;
