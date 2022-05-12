@@ -41,7 +41,7 @@ export async function reportByWorkerID(searchID: number): Promise<string> {
     return print;
 }
 
-// Report orders by specified time-frames
+// Report orders by specified time period
 export async function reportOrdersByTime(start: string, end: string): Promise<string> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
@@ -50,11 +50,19 @@ export async function reportOrdersByTime(start: string, end: string): Promise<st
     const specificRezervations = savedRezervations.filter(r => r.start.getTime() >= dateStart.getTime() && r.end.getTime() <= dateEnd.getTime());
     const specificOrders: Order[][] = [];
 
+    if(!specificRezervations) {
+        throw new Error("There are no orders in this time period!");
+    }
+
     for(let i = 0; i < specificRezervations.length; i++) {
         const temp = savedOrders.filter(o => o.table.id === specificRezervations[i].table.id)
         if(temp) {
             specificOrders.push(temp);
         }
+    }
+
+    if(!specificOrders) {
+        throw new Error("There are no orders in this time period!");
     }
 
     let print = '';
@@ -76,4 +84,39 @@ export async function reportOrdersByTime(start: string, end: string): Promise<st
     }
     
     return print;
+}
+
+// Report remuneration in specified time period
+export async function reportIncomeByTime(start: string, end: string): Promise<string> {
+    const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
+    const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
+    const dateStart = new Date(start);
+    const dateEnd = new Date(end);
+    const specificRezervations = savedRezervations.filter(r => r.start.getTime() >= dateStart.getTime() && r.end.getTime() <= dateEnd.getTime());
+    const specificOrders: Order[][] = [];
+
+    if(!specificRezervations) {
+        throw new Error("There are no orders in this time period!");
+    }
+
+    for(let i = 0; i < specificRezervations.length; i++) {
+        const temp = savedOrders.filter(o => o.table.id === specificRezervations[i].table.id)
+        if(temp) {
+            specificOrders.push(temp);
+        }
+    }
+
+    if(!specificOrders) {
+        throw new Error("There are no orders in this time period!");
+    }
+
+    let print = 0;
+
+    for(let i = 0; i < specificOrders.length; i++) {
+        for(let j = 0; j < specificOrders[i].length; j++) { 
+                print += parseFloat(specificOrders[i][j].price);
+        }
+    }
+    
+    return print.toString();
 }

@@ -11,23 +11,30 @@ import { readStorage, updateStorage } from "../services/storageService";
 // Create new order
 export async function createOrder(data: Order): Promise<number> {
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
+    const specificWorker = savedWorkers.find(w => w.name === data.worker.name && w.surname === data.worker.surname && w.occupation === data.worker.occupation);
 
-    if(!savedWorkers.find(w => w.name === data.worker.name && w.surname === data.worker.surname && w.occupation === data.worker.occupation)) {
+    if(!specificWorker) {
         throw new Error("Current worker isn't registered!");
     }
 
     const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
+    const specificMeals: Meal[] = [];
 
     for(let i = 0; i < data.meals.length; i++) {
-        if(!savedMeals.find(m => m.name === data.meals[i].name && m.price === data.meals[i].price && m.category === data.meals[i].category)) {
+        const temp = savedMeals.find(m => m.name === data.meals[i].name && m.price === data.meals[i].price && m.category === data.meals[i].category);
+        if(temp) {
+            specificMeals.push(temp);
+        }
+        else {
             throw new Error("Current meal isn't registered!");
         }
     }
 
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
+    const specificTable = savedTables.find(t => t.name === data.table.name && t.numPlaces === data.table.numPlaces && t.status === data.table.status);
 
-    if(!savedTables.find(t => t.name === data.table.name && t.numPlaces === data.table.numPlaces)) {
-        throw new Error("Current worker isn't registered!");
+    if(!specificTable) {
+        throw new Error("Current table isn't registered!");
     }
 
     let orderPrice = 0;
@@ -36,6 +43,9 @@ export async function createOrder(data: Order): Promise<number> {
         orderPrice += parseFloat(data.meals[i].price);
     }
 
+    data.meals = specificMeals;
+    data.worker = specificWorker;
+    data.table = specificTable;
     data.table.status = TableStatus['taken'];
 
     const newOrder = {
