@@ -63,7 +63,7 @@ export async function updateMeal(searchID: number, data: Meal): Promise<string> 
     const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
     if(savedMeals.length < 1) {
-         throw new Error("There is no meals in menu!");
+         throw new Error("There are no meals in menu!");
     }
   
     const mealIndex = savedMeals.findIndex(r => r.id === searchID)
@@ -97,7 +97,7 @@ export async function deleteMeal(searchID: number): Promise<void> {
     const savedMeals: Meal[] = JSON.parse(await readStorage('./data/menu.json')) ?? [];
 
   if(savedMeals.length < 1) {
-    throw new Error("There is no meals in menu!");
+    throw new Error("There are no meals in menu!");
   }
 
   const mealIndex = savedMeals.findIndex(m => m.id === searchID)

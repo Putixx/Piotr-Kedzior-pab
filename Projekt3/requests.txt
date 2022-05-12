@@ -25,13 +25,10 @@ RESTAURANTS:
 {"name":"restaurant2","address":"adress2","phone":"phone2","nip":"nip2","email":"email2","www":"www2"}
 {"name":"restaurant3","address":"adress3","phone":"phone3","nip":"nip3","email":"email3","www":"www3"}
 
-
-
-
-
-
 MENU:
-{"name":"schabowy z pure","price":"23","category":"dinner"}
+{"name":"dinner1","price":"15","category":"dinner"}
+{"name":"dinner2","price":"25","category":"dinner"}
+{"name":"dinner3","price":"45","category":"dinner"}
 
 ORDER:
 {"worker":{"name":"majkel", "surname":"jordanaa", "occupation":"manager"}, "meals":[{"name":"schab i ziemniaki", "price":"25", "category":"dinner"}, {"name":"tiramisu", "price":"18", "category":"deser"}], "status":"inprogress", "table":{"name":"table1", "numPlaces":"2", "status":"taken"}}
