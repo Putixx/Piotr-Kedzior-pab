@@ -3,6 +3,18 @@ WORKER:
 {"name":"George","surname":"Mamale","occupation":"waiter"}
 {"name":"Jane","surname":"Mamale","occupation":"waiter"}
 
+WAREHOUSE:
+{"name":"dinner1","price":"15","quantity":"20","unitOfMeasure":"dg"}
+{"name":"dinner2","price":"25","quantity":"10","unitOfMeasure":"dg"}
+{"name":"dinner3","price":"45","quantity":"30","unitOfMeasure":"kg"}
+
+TOORDER:
+{"name":"dinner1","price":"15","quantity":"20","unitOfMeasure":"dg"}
+
+
+
+
+
 MENU:
 {"name":"schabowy z pure","price":"23","category":"dinner"}
 

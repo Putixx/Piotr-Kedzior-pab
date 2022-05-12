@@ -34,7 +34,7 @@ export async function readAllProducts(): Promise<string> {
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
     if(savedProducts.length < 1) {
-      throw new Error("There is no products!");
+      throw new Error("There are no products!");
     }
   
     let print = "";
@@ -52,7 +52,7 @@ export async function readAllProductsSorted(sortOrder: string): Promise<string> 
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
   
     if(savedProducts.length < 1) {
-      throw new Error("There is no products!");
+      throw new Error("There are no products!");
     }
     let print = "";
 
@@ -122,7 +122,7 @@ export async function readProduct(searchID: number): Promise<string> {
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
     if(savedProducts.length < 1) {
-        throw new Error("There is no products!");
+        throw new Error("There are no products!");
     }
 
     const productIndex = savedProducts.findIndex(p => p.id === searchID)
@@ -140,7 +140,7 @@ export async function updateProduct(data: Product, searchID: number): Promise<st
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
     if(savedProducts.length < 1) {
-        throw new Error("There is no products!");
+        throw new Error("There are no products!");
     }
 
     const productIndex = savedProducts.findIndex(p => p.id === searchID)
@@ -177,7 +177,7 @@ export async function deleteProduct(searchID: number): Promise<void> {
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
     if(savedProducts.length < 1) {
-        throw new Error("There is no products!");
+        throw new Error("There are no products!");
     }
 
     const productIndex = savedProducts.findIndex(p => p.id === searchID)

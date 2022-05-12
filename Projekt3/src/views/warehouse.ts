@@ -65,8 +65,8 @@ warehouseRouter.post("/need", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered products
-warehouseRouter.get("/products", async function (req: Request, res: Response) {
-  return res.status(200).send("List of products: \n" + readAllProducts());
+warehouseRouter.get("", async function (req: Request, res: Response) {
+  return res.status(200).send("List of products: \n" + await readAllProducts());
 });
 
 // GET registered products in sorted order by param
@@ -79,18 +79,18 @@ warehouseRouter.get("/:sort", async function (req: Request, res: Response) {
   });
 
 // GET registered product by id
-warehouseRouter.get("/:id", async function (req: Request, res: Response) {
+warehouseRouter.get("/product/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     return res.status(400).send("You need to send ID!");
   }
   
-  return res.status(200).send("Product before edit: " + readProduct(+req.params.id));
+  return res.status(200).send("Product: " + await readProduct(+req.params.id));
 });
 
 /* PUT */
 
 // EDIT registered product by id
-warehouseRouter.put("/:id", async function (req: Request, res: Response) {
+warehouseRouter.put("/product/:id", async function (req: Request, res: Response) {
   if(!req.body) {
     return res.status(400).send("You need to send new data to update existing product!");
   }
@@ -98,13 +98,13 @@ warehouseRouter.put("/:id", async function (req: Request, res: Response) {
     return res.status(400).send("You need to send ID!");
   }
   
-  return res.status(200).send("Product before and after edit: " + await updateProduct(JSON.parse(JSON.stringify(req.body)), +req.params.id));
+  return res.status(200).send("Product before and after edit: \n" + await updateProduct(JSON.parse(JSON.stringify(req.body)), +req.params.id));
 });
 
 /* DELETE */
 
 // DELETE registered product by id
-warehouseRouter.delete("/:id", async function (req: Request, res: Response) {
+warehouseRouter.delete("/product/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     return res.status(400).send("You need to send ID!");
   }
