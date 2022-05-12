@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Table } from "../models/Table";
+import { Table, TableStatus } from "../models/Table";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */
@@ -29,14 +29,14 @@ export async function readTableByNumOfPlaces(numPlaces: number): Promise<string>
         throw new Error("There are no such tables!");
     }
 
-    const specificTables = savedTables.filter(t => t.numPlaces === numPlaces && t.status === 'free');
+    const specificTables = savedTables.filter(t => t.numPlaces.toString() === numPlaces.toString());
 
-    if(!specificTables) {
+    if(specificTables.length < 1) {
         return 'No free tables of specified number of place settings available!';
     }
 
     let print = "";
-
+    
     for(let i = 0; i < specificTables.length; i++) {
         print += "ID: " + specificTables[i].id + " Name: " + specificTables[i].name + " Number of place settings: " + specificTables[i].numPlaces 
         + " Status: " + specificTables[i].status + "\n";
@@ -68,7 +68,7 @@ export async function readTable(searchID: number): Promise<string> {
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
-        throw new Error("There is no tables!");
+        throw new Error("There are no tables!");
     }
 
     const tableIndex = savedTables.findIndex(t => t.id === searchID)
@@ -86,7 +86,7 @@ export async function updateTable(data: Table, searchID: number): Promise<string
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
-        throw new Error("There is no tables!");
+        throw new Error("There are no tables!");
     }
 
     const tableIndex = savedTables.findIndex(t => t.id === searchID)
@@ -120,7 +120,7 @@ export async function deleteTable(searchID: number): Promise<void> {
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
-        throw new Error("There is no tables!");
+        throw new Error("There are no tables!");
     }
 
     const tableIndex = savedTables.findIndex(t => t.id === searchID)

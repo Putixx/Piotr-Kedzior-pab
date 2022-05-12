@@ -35,13 +35,13 @@ tableRouter.post("/register", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered tables with specific number of place settings
-tableRouter.get("/:numPlaces", async function (req: Request, res: Response) {
-  return res.status(200).send("Free tables with specific number of place settings: \n" + readTableByNumOfPlaces(+req.params.numPlaces));
+tableRouter.get("/find/:numPlaces", async function (req: Request, res: Response) {
+  return res.status(200).send("Free tables with specific number of place settings: \n" + await readTableByNumOfPlaces(+req.params.numPlaces));
 });
 
 // GET registered tables
-tableRouter.get("/tables", async function (req: Request, res: Response) {
-  return res.status(200).send("List of tables: \n" + readAllTables());
+tableRouter.get("", async function (req: Request, res: Response) {
+  return res.status(200).send("List of tables: \n" + await readAllTables());
 });
 
 // GET registered table by id
@@ -50,7 +50,7 @@ tableRouter.get("/:id", async function (req: Request, res: Response) {
     return res.status(400).send("You need to send ID!");
   }
   
-  return res.status(200).send("Table: " + readTable(+req.params.id));
+  return res.status(200).send("Table: " + await readTable(+req.params.id));
 });
 
 /* PUT */
@@ -63,8 +63,12 @@ tableRouter.put("/:id", async function (req: Request, res: Response) {
   if (!req.params.id) {
     return res.status(400).send("You need to send ID!");
   }
-  
-  return res.status(200).send("Table before and after edit: \n" + updateTable(JSON.parse(JSON.stringify(req.body)), +req.params.id));
+  if(req.body.status === 'free' || req.body.status === 'taken' || req.body.status === 'unavailable') {
+    return res.status(200).send("Table before and after edit: \n" + await updateTable(JSON.parse(JSON.stringify(req.body)), +req.params.id));
+  }
+  else {
+    return res.status(400).send("Statuses available: free, taken, unavailable!");
+  }
 });
 
 /* DELETE */
