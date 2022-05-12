@@ -15,7 +15,7 @@ export async function createWorker(data: Worker): Promise<number> {
     }
     
     savedWorkers.push(newWorker);
-    await updateStorage('../data/workers.json', JSON.stringify(savedWorkers));
+    await updateStorage('./data/workers.json', JSON.stringify(savedWorkers));
     return newWorker.id;
 }
 
@@ -24,7 +24,7 @@ export async function readAllWorkers(): Promise<string> {
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
     if(savedWorkers.length < 1) {
-      throw new Error("There is no workers!");
+      throw new Error("There are no workers!");
     }
   
     let print = "";
@@ -42,7 +42,7 @@ export async function readWorker(searchID: number): Promise<string> {
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
-    throw new Error("There is no workers!");
+    throw new Error("There are no workers!");
   }
 
   const workerIndex = savedWorkers.findIndex(w => w.id === searchID)
@@ -60,7 +60,7 @@ export async function updateWorker(data: Worker, searchID: number): Promise<stri
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
     if(savedWorkers.length < 1) {
-        throw new Error("There is no workers!");
+        throw new Error("There are no workers!");
     }
 
     const workerIndex = savedWorkers.findIndex(w => w.id === searchID)
@@ -94,7 +94,7 @@ export async function deleteWorker(searchID: number): Promise<void> {
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
   if(savedWorkers.length < 1) {
-    throw new Error("There is no workers!");
+    throw new Error("There are no workers!");
   }
 
   const workerIndex = savedWorkers.findIndex(w => w.id === searchID)

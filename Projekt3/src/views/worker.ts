@@ -31,7 +31,7 @@ workerRouter.post("/register", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered workers
-workerRouter.get("/workers", async function (req: Request, res: Response) {
+workerRouter.get("", async function (req: Request, res: Response) {
   return res.status(201).send("List of workers: \n" + await readAllWorkers());
 });
 

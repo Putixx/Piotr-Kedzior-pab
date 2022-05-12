@@ -87,7 +87,7 @@ export async function reportOrdersByTime(start: string, end: string): Promise<st
 }
 
 // Report remuneration in specified time period
-export async function reportIncomeByTime(start: string, end: string): Promise<string> {
+export async function reportIncomeByTime(start: string, end: string): Promise<number> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
     const dateStart = new Date(start);
@@ -110,13 +110,13 @@ export async function reportIncomeByTime(start: string, end: string): Promise<st
         throw new Error("There are no orders in this time period!");
     }
 
-    let print = 0;
+    let income = 0;
 
     for(let i = 0; i < specificOrders.length; i++) {
         for(let j = 0; j < specificOrders[i].length; j++) { 
-                print += parseFloat(specificOrders[i][j].price);
+            income += parseFloat(specificOrders[i][j].price);
         }
     }
     
-    return print.toString();
+    return income;
 }
