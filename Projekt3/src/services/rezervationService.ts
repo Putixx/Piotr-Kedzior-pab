@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Table } from "../models/Table";
+import { Table, TableStatus } from "../models/Table";
 import { Rezervation } from "../models/Rezervation";
 import { readStorage, updateStorage } from "../services/storageService";
 
@@ -8,15 +8,24 @@ import { readStorage, updateStorage } from "../services/storageService";
 
 // Create new rezervation
 export async function createRezervation(data: Rezervation): Promise<number> {
-    const newRezervation: Rezervation = new Rezervation(data);
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
-
-    if(!savedTables.find(t => t.name === newRezervation.table.name && t.numPlaces === newRezervation.table.numPlaces)) {
+    const specificTable = savedTables.find(t => t.name === data.table.name && t.numPlaces === data.table.numPlaces);
+    
+    if(!specificTable) {
         throw new Error("There is no such table!")
     }
 
-    if(savedRezervations.find(r => r.table === newRezervation.table)) {
+
+    specificTable.status = TableStatus['taken'];
+    data.table = specificTable;
+    const newRezervation: Rezervation = new Rezervation(data);
+
+    if(new Date(newRezervation.end).getTime() < new Date(newRezervation.start).getTime()) {
+        throw new Error("End time must be later than start time!")
+    }
+
+    if(savedRezervations.find(r => new Date(r.end).getTime() > new Date(newRezervation.start).getTime() && r.table.name === newRezervation.table.name)) {
         throw new Error("Current table is already reserved!");
     }
 
@@ -37,7 +46,7 @@ export async function readAllRezervations(): Promise<string> {
 
     for(let i = 0; i < savedRezervations.length; i++) {
         print += "ID: " + savedRezervations[i].id + " Table name: " + savedRezervations[i].table.name + " Table number of place settings: " 
-        + savedRezervations[i].table.numPlaces + "Table status: " + savedRezervations[i].table.status + " Start: " + savedRezervations[i].start 
+        + savedRezervations[i].table.numPlaces + " Table status: " + savedRezervations[i].table.status + " Start: " + savedRezervations[i].start 
         + " End: " + savedRezervations[i].end + " Client: " + savedRezervations[i].client + "\n";
     }
 
@@ -46,55 +55,60 @@ export async function readAllRezervations(): Promise<string> {
 
 // Read rezervation specified by ID
 export async function readRezervation(searchID: number): Promise<string> {
-    const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervation.json')) ?? [];
+    const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
 
     if(savedRezervations.length < 1) {
         throw new Error("There are no rezervations!");
     }
 
-    const reservationIndex = savedRezervations.findIndex(r => r.id === searchID)
+    const rezervationIndex = savedRezervations.findIndex(r => r.id === searchID)
 
-    if(reservationIndex === -1) {
+    if(rezervationIndex === -1) {
         throw new Error("Wrong ID!");
     }
 
-    return "ID: " + savedRezervations[reservationIndex].id + " Table: " + savedRezervations[reservationIndex].table + " Start: " 
-    + savedRezervations[reservationIndex].start + " End: " + savedRezervations[reservationIndex].end + " Client: " + savedRezervations[reservationIndex].client + "\n";
+    return "ID: " + savedRezervations[rezervationIndex].id + " Table name: " + savedRezervations[rezervationIndex].table.name + " Table number of place settings: " 
+    + savedRezervations[rezervationIndex].table.numPlaces + " Table status: " + savedRezervations[rezervationIndex].table.status 
+    + " Start: " + savedRezervations[rezervationIndex].start + " End: " + savedRezervations[rezervationIndex].end + " Client: " 
+    + savedRezervations[rezervationIndex].client + "\n";
 }
 
 // Update existing rezervation specified by ID
 export async function updateRezervation(data: Rezervation, searchID: number): Promise<string> {
-    const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervation.json')) ?? [];
+    const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
 
     if(savedRezervations.length < 1) {
         throw new Error("There are no rezervations!");
     }
 
-    const reservationIndex = savedRezervations.findIndex(r => r.id === searchID)
+    const rezervationIndex = savedRezervations.findIndex(r => r.id === searchID)
 
-    if(reservationIndex === -1) {
+    if(rezervationIndex === -1) {
         throw new Error("Wrong ID!");
     }
 
-    const printOld = "ID: " + savedRezervations[reservationIndex].id + " Table: " + savedRezervations[reservationIndex].table + " Start: " 
-    + savedRezervations[reservationIndex].start + " End: " + savedRezervations[reservationIndex].end + " Client: " 
-    + savedRezervations[reservationIndex].client + "\n";
+    const printOld = "ID: " + savedRezervations[rezervationIndex].id + " Table name: " + savedRezervations[rezervationIndex].table.name + " Table number of place settings: " 
+    + savedRezervations[rezervationIndex].table.numPlaces + " Table status: " + savedRezervations[rezervationIndex].table.status 
+    + " Start: " + savedRezervations[rezervationIndex].start + " End: " + savedRezervations[rezervationIndex].end + " Client: " 
+    + savedRezervations[rezervationIndex].client + "\n";
 
     if(data.table) {
-        savedRezervations[reservationIndex].table = data.table;
+        savedRezervations[rezervationIndex].table = data.table;
     }
     if(data.start) {
-        savedRezervations[reservationIndex].start = data.start;
+        savedRezervations[rezervationIndex].start = data.start;
     }
     if(data.end) {
-        savedRezervations[reservationIndex].end = data.end;
+        savedRezervations[rezervationIndex].end = data.end;
     }
     if(data.client) {
-        savedRezervations[reservationIndex].client = data.client;
+        savedRezervations[rezervationIndex].client = data.client;
     }
     
-    const printNew = "ID: " + savedRezervations[reservationIndex].id + " Table: " + savedRezervations[reservationIndex].table + " Start: " + savedRezervations[reservationIndex].start 
-    + " End: " + savedRezervations[reservationIndex].end + " Client: " + savedRezervations[reservationIndex].client + "\n";
+    const printNew = "ID: " + savedRezervations[rezervationIndex].id + " Table name: " + savedRezervations[rezervationIndex].table.name + " Table number of place settings: " 
+    + savedRezervations[rezervationIndex].table.numPlaces + " Table status: " + savedRezervations[rezervationIndex].table.status 
+    + " Start: " + savedRezervations[rezervationIndex].start + " End: " + savedRezervations[rezervationIndex].end + " Client: " 
+    + savedRezervations[rezervationIndex].client + "\n";
 
     await updateStorage('./data/rezervations.json', JSON.stringify(savedRezervations));
     return printOld + printNew;
@@ -105,15 +119,15 @@ export async function deleteRezervation(searchID: number): Promise<void> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
 
     if(savedRezervations.length < 1) {
-        throw new Error("There is no rezervations!");
+        throw new Error("There are no rezervations!");
     }
 
-    const reservationIndex = savedRezervations.findIndex(r => r.id === searchID)
+    const rezervationIndex = savedRezervations.findIndex(r => r.id === searchID)
 
-    if(reservationIndex === -1) {
+    if(rezervationIndex === -1) {
         throw new Error("Wrong ID!");
     }
 
-    savedRezervations.splice(reservationIndex, 1);
+    savedRezervations.splice(rezervationIndex, 1);
     await updateStorage('./data/rezervations.json', JSON.stringify(savedRezervations));
 }

@@ -2,9 +2,7 @@
 
 import express from "express";
 import { Request, Response } from "express";
-import { Rezervation } from "../models/Rezervation";
-import { createRezervation, deleteRezervation, readAllRezervations, updateRezervation } from "../services/rezervationService";
-import { readStorage, updateStorage } from "../services/storageService";
+import { createRezervation, deleteRezervation, readAllRezervations, readRezervation, updateRezervation } from "../services/rezervationService";
 
 /* SETUP */
 
@@ -15,19 +13,19 @@ const rezervationRouter = express.Router();
 // POST register new rezervation
 rezervationRouter.post("/register", async function (req: Request, res: Response) {
   if (!req.body) {
-    return res.status(401).send("To register a new rezervation you need to send it's: table, start time, end time and client!");
+    return res.status(400).send("To register a new rezervation you need to send it's: table, start time, end time and client!");
   }
   if (!req.body.table) {
-    return res.status(401).send("Table is missing!");
+    return res.status(400).send("Table is missing!");
   }
   if (!req.body.start) {
-    return res.status(401).send("Start time is missing!");
+    return res.status(400).send("Start time is missing!");
   }
   if (!req.body.end) {
-    return res.status(401).send("End time is missing!");
+    return res.status(400).send("End time is missing!");
   }
   if (!req.body.client) {
-    return res.status(401).send("Client data is missing!");
+    return res.status(400).send("Client data is missing!");
   }
 
   return res.status(201).send("New rezervation registration succeded! It's ID: " + await createRezervation(JSON.parse(JSON.stringify(req.body))));
@@ -36,8 +34,8 @@ rezervationRouter.post("/register", async function (req: Request, res: Response)
 /* GET */
 
 // GET registered rezervations
-rezervationRouter.get("/rezervations", async function (req: Request, res: Response) {
-  return res.status(200).send("List of rezervations: \n" + readAllRezervations());
+rezervationRouter.get("", async function (req: Request, res: Response) {
+  return res.status(200).send("List of rezervations: \n" + await readAllRezervations());
 });
 
 // GET registered rezervation by id
@@ -46,7 +44,7 @@ rezervationRouter.get("/:id", async function (req: Request, res: Response) {
     return res.status(400).send("You need to send ID!");
   }
   
-  return res.status(200).send("Reservation: " + print);
+  return res.status(200).send("Reservation: " + await readRezervation(+req.params.id));
 });
 
 /* PUT */
