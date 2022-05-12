@@ -40,12 +40,12 @@ restaurantRouter.post("/register", async function (req: Request, res: Response) 
 /* GET */
 
 // GET registered restaurants with same name
-restaurantRouter.get("/:name", async function (req: Request, res: Response) {
+restaurantRouter.get("/name/:name", async function (req: Request, res: Response) {
   if (!req.params.name) {
     return res.status(400).send("You need to send restaurant name!");
   }
 
-  return res.status(200).send("Restaurants with same name: \n" + readRestaurantsByName(req.params.name));
+  return res.status(200).send("Restaurants with same name: \n" + await readRestaurantsByName(req.params.name));
 });
 
 // GET registered restaurant by id
@@ -54,12 +54,12 @@ restaurantRouter.get("/:id", async function (req: Request, res: Response) {
     return res.status(400).send("You need to send restaurant ID!");
   }
 
-  return res.status(200).send("Restaurant: \n" + readRestaurant(+req.params.id));
+  return res.status(200).send("Restaurant: \n" + await readRestaurant(+req.params.id));
 });
 
 // GET registered restaurants
-restaurantRouter.get("/restaurants", async function (req: Request, res: Response) {
-  return res.status(200).send("Restaurant list: \n" + readAllRestaurants());
+restaurantRouter.get("", async function (req: Request, res: Response) {
+  return res.status(200).send("Restaurant list: \n" + await readAllRestaurants());
 });
 
 /* PUT */
