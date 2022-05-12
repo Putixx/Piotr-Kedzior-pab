@@ -38,7 +38,7 @@ orderRouter.post("/register", async function (req: Request, res: Response) {
 /* GET */
 
 // GET registered orders
-orderRouter.get("/orders", async function (req: Request, res: Response) {
+orderRouter.get("", async function (req: Request, res: Response) {
   return res.status(200).send("List of orders: \n" + await readAllOrders());
 });
 

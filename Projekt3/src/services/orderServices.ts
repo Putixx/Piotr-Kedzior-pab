@@ -31,7 +31,7 @@ export async function createOrder(data: Order): Promise<number> {
     }
 
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
-    const specificTable = savedTables.find(t => t.name === data.table.name && t.numPlaces === data.table.numPlaces && t.status === data.table.status);
+    const specificTable = savedTables.find(t => t.name === data.table.name && t.numPlaces === data.table.numPlaces);
 
     if(!specificTable) {
         throw new Error("Current table isn't registered!");
@@ -59,7 +59,7 @@ export async function createOrder(data: Order): Promise<number> {
 
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
-    if(savedOrders.find(o => o.worker === newOrder.worker &&  o.meals === newOrder.meals &&  o.table === newOrder.table && o.price === newOrder.price)) {
+    if(savedOrders.find(o => o.worker.name === newOrder.worker.name && o.table.name === newOrder.table.name && o.price === newOrder.price)) {
         throw new Error("Current order is already registered!");
     }
 

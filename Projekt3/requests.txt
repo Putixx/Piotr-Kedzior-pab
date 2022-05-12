@@ -18,7 +18,7 @@ TABLE:
 
 REZERVATIONS:
 {"table":{"name":"table2","numPlaces":"12"},"start":"2022-05-05","end":"2022-05-06","client":"Joan Merk"}
-{"table":{"name":"table3","numPlaces":"2"},"start":"2022-05-05","end":"2022-05-06","client":"Joan Merk"}
+{"table":{"name":"table3","numPlaces":"2"},"start":"2022-04-03","end":"2022-04-05","client":"Joan Merk"}
 
 RESTAURANTS:
 {"name":"restaurant1","address":"adress1","phone":"phone1","nip":"nip1","email":"email1","www":"www1"}
@@ -31,9 +31,8 @@ MENU:
 {"name":"dinner3","price":"45","category":"dinner"}
 
 ORDER:
-{"worker":{"name":"majkel", "surname":"jordanaa", "occupation":"manager"}, "meals":[{"name":"schab i ziemniaki", "price":"25", "category":"dinner"}, {"name":"tiramisu", "price":"18", "category":"deser"}], "status":"inprogress", "table":{"name":"table1", "numPlaces":"2", "status":"taken"}}
-
-
+{"worker":{"name":"Majkel","surname":"Mamale","occupation":"waiter"},"meals":[{"name":"dinner1","price":"15","category":"dinner"},{"name":"dinner2","price":"25","category":"dinner"}],"status":"inprogress","table":{"name":"table1","numPlaces":"5","status":"taken"},"price":40}
+{"worker":{"name":"Majkel","surname":"Mamale","occupation":"waiter"},"meals":[{"name":"dinner1","price":"15","category":"dinner"},{"name":"dinner2","price":"25","category":"dinner"}],"status":"inprogress","table":{"name":"table2","numPlaces":"12","status":"taken"},"price":"42"}
 
 
 
