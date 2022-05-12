@@ -47,7 +47,7 @@ export async function reportOrdersByTime(start: string, end: string): Promise<st
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
     const dateStart = new Date(start);
     const dateEnd = new Date(end);
-    const specificRezervations = savedRezervations.filter(r => r.start.getTime() >= dateStart.getTime() && r.end.getTime() <= dateEnd.getTime());
+    const specificRezervations = savedRezervations.filter(r =>new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime());
     const specificOrders: Order[][] = [];
 
     if(!specificRezervations) {
@@ -55,7 +55,7 @@ export async function reportOrdersByTime(start: string, end: string): Promise<st
     }
 
     for(let i = 0; i < specificRezervations.length; i++) {
-        const temp = savedOrders.filter(o => o.table.id === specificRezervations[i].table.id)
+        const temp = savedOrders.filter(o => o.table.name === specificRezervations[i].table.name)
         if(temp) {
             specificOrders.push(temp);
         }
@@ -92,7 +92,7 @@ export async function reportIncomeByTime(start: string, end: string): Promise<nu
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
     const dateStart = new Date(start);
     const dateEnd = new Date(end);
-    const specificRezervations = savedRezervations.filter(r => r.start.getTime() >= dateStart.getTime() && r.end.getTime() <= dateEnd.getTime());
+    const specificRezervations = savedRezervations.filter(r => new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime());
     const specificOrders: Order[][] = [];
 
     if(!specificRezervations) {
@@ -100,7 +100,7 @@ export async function reportIncomeByTime(start: string, end: string): Promise<nu
     }
 
     for(let i = 0; i < specificRezervations.length; i++) {
-        const temp = savedOrders.filter(o => o.table.id === specificRezervations[i].table.id)
+        const temp = savedOrders.filter(o => o.table.name === specificRezervations[i].table.name)
         if(temp) {
             specificOrders.push(temp);
         }
