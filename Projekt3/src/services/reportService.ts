@@ -1,10 +1,10 @@
 /* IMPORT */
 
-import { Meal } from "../models/Meal";
-import { Order } from "../models/Order";
-import { Rezervation } from "../models/Rezervation";
-import { Table, TableStatus } from "../models/Table";
-import { Worker } from "../models/Worker";
+import { Meal } from "../models/mealModel";
+import { Order } from "../models/orderModel";
+import { Rezervation } from "../models/rezervationModel";
+import { Table, TableStatus } from "../models/tableModel";
+import { Worker } from "../models/workerModel";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */

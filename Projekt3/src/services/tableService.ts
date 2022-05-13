@@ -1,13 +1,12 @@
 /* IMPORT */
 
-import { Table, TableStatus } from "../models/Table";
+import { Table, TableStatus } from "../models/tableModel";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */
 
 // Create new table
 export async function createTable(data: Table): Promise<number> {
-
     const newTable = new Table(data);
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
   

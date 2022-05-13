@@ -1,6 +1,6 @@
-import {Table} from './Table'
-import {Worker} from './Worker'
-import {Meal} from './Meal'
+import {Table} from './tableModel'
+import {Worker} from './workerModel'
+import {Meal} from './mealModel'
 
 enum OrderStatus { ordered = 'ordered', inprogress = 'inprogress', realized = 'realized', bill = 'bill'}
 

@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Worker } from "../models/Worker";
+import { Worker } from "../models/workerModel";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */

@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Restaurant } from "../models/Restaurant";
+import { Restaurant } from "../models/restaurantModel";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */

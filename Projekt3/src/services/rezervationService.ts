@@ -1,7 +1,7 @@
 /* IMPORT */
 
-import { Table, TableStatus } from "../models/Table";
-import { Rezervation } from "../models/Rezervation";
+import { Table, TableStatus } from "../models/tableModel";
+import { Rezervation } from "../models/rezervationModel";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */

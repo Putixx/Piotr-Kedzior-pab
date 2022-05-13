@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Meal } from "../models/Meal";
+import { Meal } from "../models/mealModel";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */

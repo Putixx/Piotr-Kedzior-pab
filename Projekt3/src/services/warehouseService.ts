@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Product } from "../models/Product";
+import { Product } from "../models/productModel";
 import { readStorage, updateStorage } from "../services/storageService";
 
 /* FUNCTIONS */
