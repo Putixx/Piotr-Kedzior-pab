@@ -1,4 +1,7 @@
+/* IMPORT */
+
 import express from 'express'
+import databaseRouter from './views/database'
 import menuRouter from './views/menu'
 import orderRouter from './views/order'
 import orderRepRouter from './views/orderReports'
@@ -8,10 +11,13 @@ import tableRouter from './views/table'
 import warehouseRouter from './views/warehouse'
 import workerRouter from './views/worker'
 
+/* SETUP */
+
 const port = 3000 
 const app = express()
 
 app.use(express.json())
+app.use('/database', databaseRouter)
 app.use('/menu', menuRouter)
 app.use('/orders', orderRouter)
 app.use('/report', orderRepRouter)

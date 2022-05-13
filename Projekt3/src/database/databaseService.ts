@@ -1,3 +1,5 @@
+/* IMPORT */
+
 import mongoose from 'mongoose';
 import { Meal } from '../models/mealModel';
 import { Order } from '../models/orderModel';
@@ -15,8 +17,10 @@ import rezervationDBModel from './dbModels/rezervationScheme';
 import tableDBModel from './dbModels/tableScheme';
 import workerDBModel from './dbModels/workerScheme';
 
+/* FUNCTIONS */
+
 // Connect to database
-export async function connectDb(): Promise<void> {
+export async function connectDB(): Promise<void> {
     try {
         const conn = await mongoose.connect('mongodb+srv://PiotrKedzior:<9hYBMQOlZ5r3zOBD>@restaurantproject.mkjqh.mongodb.net/RestaurantProject?retryWrites=true&w=majority')
         console.log('Connected to database!')
