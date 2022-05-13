@@ -41,43 +41,71 @@ export async function syncData(): Promise<void> {
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
     if(savedMeals && savedMeals.length > 0) {
-        (new mealDBModel(savedMeals)).save();
+        await mealDBModel.deleteMany();
+
+        for(let i = 0; i < savedMeals.length; i++) {
+            await (new mealDBModel(savedMeals[i])).save();
+        }
     } else {
         console.log('There are no meals!');
     }
 
     if(savedWorkers && savedWorkers.length > 0) {
-        (new workerDBModel(savedWorkers)).save();
+        await workerDBModel.deleteMany();
+
+        for(let i = 0; i < savedWorkers.length; i++) {
+            await (new workerDBModel(savedWorkers[i])).save();
+        }
     } else {
         console.log('There are no workers!');
     }
 
     if(savedRestaurants && savedRestaurants.length > 0) {
-        (new restaurantDBModel(savedRestaurants)).save();
+        await restaurantDBModel.deleteMany();
+
+        for(let i = 0; i < savedRestaurants.length; i++) {
+            await (new restaurantDBModel(savedRestaurants[i])).save();
+        }
     } else {
         console.log('There are no restaurants!');
     }
 
     if(savedTables && savedTables.length > 0) {
-        (new tableDBModel(savedTables)).save();
+        await tableDBModel.deleteMany();
+
+        for(let i = 0; i < savedTables.length; i++) {
+            await (new tableDBModel(savedTables[i])).save();
+        }
     } else {
         console.log('There are no tables!');
     }
 
     if(savedProducts && savedProducts.length > 0) {
-        (new productDBModel(savedProducts)).save();
+        await productDBModel.deleteMany();
+
+        for(let i = 0; i < savedProducts.length; i++) {
+            await (new productDBModel(savedProducts[i])).save();
+        }
     } else {
         console.log('There are no products!');
     }
     
     if(savedRezervations && savedRezervations.length > 0) {
-        (new rezervationDBModel(savedRezervations)).save();
+        await rezervationDBModel.deleteMany();
+
+        for(let i = 0; i < savedRezervations.length; i++) {
+            await (new rezervationDBModel(savedRezervations[i])).save();
+        }
     } else {
         console.log('There are no rezervations!');
     }
     
     if(savedOrders && savedOrders.length > 0) {
-        (new orderDBModel(savedOrders)).save();
+        await orderDBModel.deleteMany();
+
+        for(let i = 0; i < savedOrders.length; i++) {
+            await (new orderDBModel(savedOrders[i])).save();
+        }
     } else {
         console.log('There are no orders!');
     }
