@@ -7,7 +7,7 @@ const rezervationSchema = new mongoose.Schema({
         required: true
     },
     table: {
-        type: tableDBModel,
+        type: { tableDBModel },
         required: true
     },
     start: { 

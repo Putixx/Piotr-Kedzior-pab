@@ -11,11 +11,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     worker: {
-        type: workerDBModel,
-        required: true
-    },
-    meals: { 
-        type: [mealDBModel],
+        type: { workerDBModel },
         required: true
     },
     status: {
@@ -23,13 +19,14 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     table: {
-        type: tableDBModel,
+        type: { tableDBModel },
         required: true
     },
     price: {
         type: String,
         required: true
-    }
+    },
+    meals: []
 })
 
 const orderDBModel = mongoose.model('order', orderSchema)
