@@ -22,7 +22,7 @@ import workerDBModel from './dbModels/workerScheme';
 // Connect to database
 export async function connectDB(): Promise<void> {
     try {
-        const conn = await mongoose.connect('mongodb+srv://PiotrKedzior:<9hYBMQOlZ5r3zOBD>@restaurantproject.mkjqh.mongodb.net/RestaurantProject?retryWrites=true&w=majority')
+        const conn = await mongoose.connect('mongodb+srv://PiotrKedzior:ic3pfg8e60DO3VWB@restaurantproject.mkjqh.mongodb.net/RestaurantProject?retryWrites=true&w=majority')
         console.log('Connected to database!')
     } catch(error) {
         console.log(error);

@@ -14,7 +14,7 @@ const databaseRouter = express.Router();
 databaseRouter.post("/sync", async function (req: Request, res: Response) {
   
     await connectDB();
-    //await syncData();
+    await syncData();
     return res.status(200).send("Data successfully synchronized!");
 });
 
