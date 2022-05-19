@@ -55,7 +55,7 @@ export async function reportOrdersByTime(start: string, end: string): Promise<st
 }
 
 // Report remuneration in specified time period
-export async function reportIncomeByTime(start: string, end: string): Promise<number> {
+export async function reportIncomeByTime(start: string, end: string): Promise<JSON> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
     const dateStart = new Date(start);
@@ -90,5 +90,5 @@ export async function reportIncomeByTime(start: string, end: string): Promise<nu
         }
     }
     
-    return income;
+    return JSON.parse(JSON.stringify(income));
 }
