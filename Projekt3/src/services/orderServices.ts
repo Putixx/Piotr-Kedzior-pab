@@ -40,7 +40,7 @@ export async function createOrder(data: Order): Promise<number> {
     let orderPrice = 0;
 
     for(let i = 0; i < data.meals.length; i++) {
-        orderPrice += parseFloat(data.meals[i].price);
+        orderPrice += data.meals[i].price;
     }
 
     data.meals = specificMeals;

@@ -2,7 +2,7 @@ export class Meal
 {
     id:number;
     name:string;
-    price:string;
+    price:number;
     category:string;
 
     constructor(t : Meal)

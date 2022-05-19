@@ -11,7 +11,7 @@ export class Order
     meals:Meal[];
     status:OrderStatus;
     table:Table;
-    price:string;
+    price:number;
 
     constructor(t : Order)
     {

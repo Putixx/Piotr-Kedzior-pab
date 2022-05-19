@@ -1,11 +1,11 @@
-enum UnitOfMeasure { gram = 'g', dekagram = 'dg', kilogram = 'kg', tona = 't'}
+export enum UnitOfMeasure { gram = 'g', dekagram = 'dg', kilogram = 'kg', tona = 't'}
 
 export class Product
 {
     id:number;
     name:string;
-    price:string;
-    quantity:string;
+    price:number;
+    quantity:number;
     unitOfMeasure:UnitOfMeasure;
 
     constructor(t : Product)
