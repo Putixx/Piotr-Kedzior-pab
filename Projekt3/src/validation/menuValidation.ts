@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Meal } from "../models/mealModel";
+
 
 /* FUNCTIONS */
 
@@ -19,7 +19,7 @@ export function createMealValidation(data: any): void {
         throw new Error("Category is missing!");
       }
       else {
-        console.log("Meal validation succeded!");
+        console.log("createMealValidation success!");
       }
 }
 

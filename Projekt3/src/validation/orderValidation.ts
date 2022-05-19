@@ -1,6 +1,6 @@
 /* IMPORT */
 
-import { Order } from "../models/orderModel";
+
 
 /* FUNCTIONS */
 
@@ -22,7 +22,7 @@ export function createOrderValidation(data: any): void {
         throw new Error("Table is missing!");
       }
       if(data.status === 'ordered' || data.status === 'inprogress' || data.status === 'realized' || data.status === 'bill') {
-        console.log("New order registration succeded!");
+        console.log("createOrderValidation success!");
         }
         else {
             throw new Error("Statuses available: ordered, inprogress, realized, bill!");

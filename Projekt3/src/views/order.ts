@@ -22,7 +22,7 @@ orderRouter.post("", async function (req: Request, res: Response) {
 
 // GET registered orders
 orderRouter.get("", async function (req: Request, res: Response) {
-  return res.status(200).send("List of orders: \n" + await readAllOrders());
+  return res.status(200).send(await readAllOrders());
 });
 
 // GET registered order by id

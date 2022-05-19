@@ -6,7 +6,7 @@ import { readStorage, updateStorage } from "../services/storageService";
 /* FUNCTIONS */
 
 // Create new restaurant
-export async function createRestaurant(data: Restaurant): Promise<number> {
+export async function createRestaurant(data: Restaurant): Promise<JSON> {
     const newRestaurant: Restaurant = new Restaurant(data); 
     const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('./data/restaurants.json')) ?? [];
   
@@ -17,11 +17,11 @@ export async function createRestaurant(data: Restaurant): Promise<number> {
     savedRestaurants.push(newRestaurant);
     await updateStorage('./data/restaurants.json', JSON.stringify(savedRestaurants));
 
-    return newRestaurant.id;
+    return JSON.parse(JSON.stringify(newRestaurant));
 }
 
 // Read all restaurants with specific name
-export async function readRestaurantsByName(name: string): Promise<string> {
+export async function readRestaurantsByName(name: string): Promise<JSON> {
     const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('./data/restaurants.json')) ?? [];
 
     if(savedRestaurants.length < 1) {
@@ -33,20 +33,12 @@ export async function readRestaurantsByName(name: string): Promise<string> {
     if(!specificRestaurants) {
         throw new Error("There are no such restaurants!");
     }
-  
-    let print = "";
-  
-    for(let i = 0; i < specificRestaurants.length; i++) {
-      print += "ID: " + specificRestaurants[i].id + " Name: " + specificRestaurants[i].name + " Address: " + specificRestaurants[i].address 
-      + " Phone: " + specificRestaurants[i].phone  + " NIP: " + specificRestaurants[i].nip + " E-mail: " + specificRestaurants[i].email 
-      + " Website: " + specificRestaurants[i].www + "\n";
-    }
 
-    return print;
+    return JSON.parse(JSON.stringify(specificRestaurants));
 }
 
 // Read restaurant specified by ID
-export async function readRestaurant(searchID: number): Promise<string> {
+export async function readRestaurant(searchID: number): Promise<JSON> {
     const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('./data/restaurants.json')) ?? [];
 
   if(savedRestaurants.length < 1) {
@@ -56,11 +48,7 @@ export async function readRestaurant(searchID: number): Promise<string> {
   const specificRestaurant = savedRestaurants.find(r => r.id === searchID)
 
   if(specificRestaurant) {
-    const print = "ID: " + specificRestaurant.id + " Name: " + specificRestaurant.name + " Address: " + specificRestaurant.address 
-    + " Phone: " + specificRestaurant.phone  + " NIP: " + specificRestaurant.nip + " E-mail: " + specificRestaurant.email 
-    + " Website: " + specificRestaurant.www + "\n";
-  
-    return print;
+    return JSON.parse(JSON.stringify(specificRestaurant));
   }
   else {
     throw new Error("There is no such restaurant!");
@@ -68,22 +56,14 @@ export async function readRestaurant(searchID: number): Promise<string> {
 }
 
 // Read all restaurants
-export async function readAllRestaurants(): Promise<string> {
+export async function readAllRestaurants(): Promise<JSON> {
     const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('./data/restaurants.json')) ?? [];
 
     if(savedRestaurants.length < 1) {
         throw new Error("There are no restaurants!");
     }
 
-    let print = "";
-
-    for(let i = 0; i < savedRestaurants.length; i++) {
-        print += "ID: " + savedRestaurants[i].id + " Name: " + savedRestaurants[i].name + " Address: " + savedRestaurants[i].address 
-        + " Phone: " + savedRestaurants[i].phone  + " NIP: " + savedRestaurants[i].nip + " E-mail: " + savedRestaurants[i].email 
-        + " Website: " + savedRestaurants[i].www + "\n";
-    }
-
-    return print;
+    return JSON.parse(JSON.stringify(savedRestaurants));
 }
 
 // Update existing restaurant specified by ID
@@ -99,10 +79,6 @@ export async function updateRestaurant(data: Restaurant, searchID: number): Prom
     if(restaurantIndex === -1) {
         throw new Error("Wrong ID!");
     }
-
-    const printOld = "ID: " + savedRestaurants[restaurantIndex].id + " Name: " + savedRestaurants[restaurantIndex].name + " Address: " 
-    + savedRestaurants[restaurantIndex].address + " Phone: " + savedRestaurants[restaurantIndex].phone + " NIP: " 
-    + savedRestaurants[restaurantIndex].nip + " E-mail: " + savedRestaurants[restaurantIndex].email + " Website: " + savedRestaurants[restaurantIndex].www + "\n";
 
     if(data.name) {
         savedRestaurants[restaurantIndex].name = data.name;
@@ -123,17 +99,12 @@ export async function updateRestaurant(data: Restaurant, searchID: number): Prom
         savedRestaurants[restaurantIndex].www = data.www;
     }
 
-
-    const printNew = "ID: " + savedRestaurants[restaurantIndex].id + " Name: " + savedRestaurants[restaurantIndex].name 
-    + " Address: " + savedRestaurants[restaurantIndex].address + " Phone: " + savedRestaurants[restaurantIndex].phone 
-    + " NIP: " + savedRestaurants[restaurantIndex].nip + " E-mail: " + savedRestaurants[restaurantIndex].email + " Website: " + savedRestaurants[restaurantIndex].www + "\n";
-
     await updateStorage('./data/restaurants.json', JSON.stringify(savedRestaurants));
-    return printOld + printNew;
+    return JSON.parse(JSON.stringify(savedRestaurants[restaurantIndex]));
 }
 
 // Delete restaurant specified by ID
-export async function deleteRestaurant(searchID: number): Promise<void> {
+export async function deleteRestaurant(searchID: number): Promise<JSON> {
     const savedRestaurants: Restaurant[] = JSON.parse(await readStorage('./data/restaurants.json')) ?? [];
 
     if(savedRestaurants.length < 1) {
@@ -146,6 +117,8 @@ export async function deleteRestaurant(searchID: number): Promise<void> {
       throw new Error("Wrong ID!");
     }
 
+    const deletedRestaurant = savedRestaurants[restaurantIndex];
     savedRestaurants.splice(restaurantIndex, 1);
     await updateStorage('./data/restaurants.json', JSON.stringify(savedRestaurants));
+    return JSON.parse(JSON.stringify(deletedRestaurant));
 }
