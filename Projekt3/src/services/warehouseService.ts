@@ -6,7 +6,7 @@ import { readStorage, updateStorage } from "../services/storageService";
 /* FUNCTIONS */
 
 // Create new product
-export async function createProduct(data: Product): Promise<number> {
+export async function createProduct(data: Product): Promise<JSON> {
     const newProduct = new Product(data);
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
@@ -16,7 +16,7 @@ export async function createProduct(data: Product): Promise<number> {
 
     savedProducts.push(newProduct);
     await updateStorage('./data/products.json', JSON.stringify(savedProducts));
-    return newProduct.id;
+    return JSON.parse(JSON.stringify(newProduct));
 }
 
 // Create new product needed
@@ -26,25 +26,18 @@ export async function createProductNeed(data: Product): Promise<number> {
 
     savedProducts.push(newProduct);
     await updateStorage('./data/productsToOrder.json', JSON.stringify(savedProducts));
-    return newProduct.id;
+    return JSON.parse(JSON.stringify(newProduct));
 }
 
 // Read all products
-export async function readAllProducts(): Promise<string> {
+export async function readAllProducts(): Promise<JSON> {
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
     if(savedProducts.length < 1) {
       throw new Error("There are no products!");
     }
-  
-    let print = "";
-  
-    for(let i = 0; i < savedProducts.length; i++) {
-      print += "ID: " + savedProducts[i].id + " Name: " + savedProducts[i].name + " Price: " + savedProducts[i].price 
-      + " Quantity: " + savedProducts[i].quantity + " Unit of measure: " + savedProducts[i].unitOfMeasure + "\n";
-    }
     
-    return print;
+    return JSON.parse(JSON.stringify(savedProducts));
 }
 
 // Read all products sorted by param
@@ -54,7 +47,6 @@ export async function readAllProductsSorted(sortOrder: string): Promise<string> 
     if(savedProducts.length < 1) {
       throw new Error("There are no products!");
     }
-    let print = "";
 
     if(sortOrder.toLocaleLowerCase() === 'id') {
         savedProducts.sort((p1, p2) => 
@@ -107,18 +99,12 @@ export async function readAllProductsSorted(sortOrder: string): Promise<string> 
             return 0;
         });
     }
-    
-  
-    for(let i = 0; i < savedProducts.length; i++) {
-      print += "ID: " + savedProducts[i].id + " Name: " + savedProducts[i].name + " Price: " + savedProducts[i].price 
-      + " Quantity: " + savedProducts[i].quantity + " Unit of measure: " + savedProducts[i].unitOfMeasure + "\n";
-    }
-  
-    return print;
+
+    return JSON.parse(JSON.stringify(savedProducts));
 }
 
 // Read product specified by ID
-export async function readProduct(searchID: number): Promise<string> {
+export async function readProduct(searchID: number): Promise<JSON> {
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
     if(savedProducts.length < 1) {
@@ -131,12 +117,11 @@ export async function readProduct(searchID: number): Promise<string> {
         throw new Error("Wrong ID!");
     }
 
-    return "ID: " + savedProducts[productIndex].id + " Name: " + savedProducts[productIndex].name + " Price: " + savedProducts[productIndex].price 
-    + " Quantity: " + savedProducts[productIndex].quantity + " Unit of measure: " + savedProducts[productIndex].unitOfMeasure + "\n";
+    return JSON.parse(JSON.stringify(savedProducts[productIndex]));
 }
 
 // Update existing product specified by ID
-export async function updateProduct(data: Product, searchID: number): Promise<string> {
+export async function updateProduct(data: Product, searchID: number): Promise<JSON> {
     const savedProducts: Product[] = JSON.parse(await readStorage('./data/products.json')) ?? [];
 
     if(savedProducts.length < 1) {
@@ -148,9 +133,6 @@ export async function updateProduct(data: Product, searchID: number): Promise<st
     if(productIndex === -1) {
         throw new Error("Wrong ID!");
     }
-
-    const printOld = "ID: " + savedProducts[productIndex].id + " Name: " + savedProducts[productIndex].name + " Price: " + savedProducts[productIndex].price 
-    + " Quantity: " + savedProducts[productIndex].quantity + " Unit of measure: " + savedProducts[productIndex].unitOfMeasure + "\n";
 
     if(data.name) {
         savedProducts[productIndex].name = data.name;
@@ -165,11 +147,8 @@ export async function updateProduct(data: Product, searchID: number): Promise<st
         savedProducts[productIndex].unitOfMeasure = data.unitOfMeasure;
     }
     
-    const printNew = "ID: " + savedProducts[productIndex].id + " Name: " + savedProducts[productIndex].name + " Price: " + savedProducts[productIndex].price 
-    + " Quantity: " + savedProducts[productIndex].quantity + " Unit of measure: " + savedProducts[productIndex].unitOfMeasure + "\n";
-
     await updateStorage('./data/products.json', JSON.stringify(savedProducts));
-    return printOld + printNew;
+    return JSON.parse(JSON.stringify(savedProducts[productIndex]));
 }
 
 // Delete existing product specified by ID
@@ -186,6 +165,8 @@ export async function deleteProduct(searchID: number): Promise<void> {
         throw new Error("Wrong ID!");
     }
 
+    const deletedProduct = savedProducts[productIndex];
     savedProducts.splice(productIndex, 1);
     await updateStorage('./data/products.json', JSON.stringify(savedProducts));
+    return JSON.parse(JSON.stringify(deletedProduct));
 }
