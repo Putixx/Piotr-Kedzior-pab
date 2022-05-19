@@ -6,7 +6,7 @@ import { readStorage, updateStorage } from "../services/storageService";
 /* FUNCTIONS */
 
 // Create new table
-export async function createTable(data: Table): Promise<number> {
+export async function createTable(data: Table): Promise<JSON> {
     const newTable = new Table(data);
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
   
@@ -17,11 +17,11 @@ export async function createTable(data: Table): Promise<number> {
     savedTables.push(newTable);
     await updateStorage('./data/tables.json', JSON.stringify(savedTables));
 
-    return newTable.id;
+    return JSON.parse(JSON.stringify(newTable));
 }
 
 // Read tables specified by number of place settings
-export async function readTableByNumOfPlaces(numPlaces: number): Promise<string> {
+export async function readTableByNumOfPlaces(numPlaces: number): Promise<JSON> {
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
@@ -31,39 +31,25 @@ export async function readTableByNumOfPlaces(numPlaces: number): Promise<string>
     const specificTables = savedTables.filter(t => t.numPlaces.toString() === numPlaces.toString());
 
     if(specificTables.length < 1) {
-        return 'No free tables of specified number of place settings available!';
+        throw new Error("No free tables of specified number of place settings available!");
     }
 
-    let print = "";
-    
-    for(let i = 0; i < specificTables.length; i++) {
-        print += "ID: " + specificTables[i].id + " Name: " + specificTables[i].name + " Number of place settings: " + specificTables[i].numPlaces 
-        + " Status: " + specificTables[i].status + "\n";
-    }
-
-    return print;
+    return JSON.parse(JSON.stringify(specificTables));
 }
 
 // Read all tables
-export async function readAllTables(): Promise<string> {
+export async function readAllTables(): Promise<JSON> {
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
         throw new Error("There are no tables!");
     }
 
-    let print = "";
-
-    for(let i = 0; i < savedTables.length; i++) {
-        print += "ID: " + savedTables[i].id + " Name: " + savedTables[i].name + " Number of place settings: " + savedTables[i].numPlaces 
-        + " Status: " + savedTables[i].status + "\n";
-    }
-
-    return print;
+    return JSON.parse(JSON.stringify(savedTables));
 }
 
 // Read table specified by ID
-export async function readTable(searchID: number): Promise<string> {
+export async function readTable(searchID: number): Promise<JSON> {
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
@@ -76,12 +62,11 @@ export async function readTable(searchID: number): Promise<string> {
         throw new Error("Wrong ID!");
     }
 
-    return "ID: " + savedTables[tableIndex].id + " Name: " + savedTables[tableIndex].name + " Number of place settings: " 
-    + savedTables[tableIndex].numPlaces + " Status: " + savedTables[tableIndex].status + "\n";
+    return JSON.parse(JSON.stringify(savedTables[tableIndex]));
 }
 
 // Update existing table specified by ID
-export async function updateTable(data: Table, searchID: number): Promise<string> {
+export async function updateTable(data: Table, searchID: number): Promise<JSON> {
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
@@ -93,9 +78,6 @@ export async function updateTable(data: Table, searchID: number): Promise<string
     if(tableIndex === -1) {
         throw new Error("Wrong ID!");
     }
-
-    const printOld = "ID: " + savedTables[tableIndex].id + " Name: " + savedTables[tableIndex].name + " Number of place settings: " 
-    + savedTables[tableIndex].numPlaces + " Status: " + savedTables[tableIndex].status + "\n";
 
     if(data.name) {
         savedTables[tableIndex].name = data.name;
@@ -106,16 +88,13 @@ export async function updateTable(data: Table, searchID: number): Promise<string
     if(data.status) {
         savedTables[tableIndex].status = data.status;
     }
-    
-    const printNew = "ID: " + savedTables[tableIndex].id + " Name: " + savedTables[tableIndex].name + " Number of place settings: " 
-    + savedTables[tableIndex].numPlaces + " Status: " + savedTables[tableIndex].status + "\n";
 
     await updateStorage('./data/tables.json', JSON.stringify(savedTables));
-    return printOld + printNew;
+    return JSON.parse(JSON.stringify(savedTables[tableIndex]));
 }
 
 // Delete existing table specified by ID
-export async function deleteTable(searchID: number): Promise<void> {
+export async function deleteTable(searchID: number): Promise<JSON> {
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
 
     if(savedTables.length < 1) {
@@ -128,6 +107,8 @@ export async function deleteTable(searchID: number): Promise<void> {
         throw new Error("Wrong ID!");
     }
 
+    const deletedTables = savedTables[tableIndex];
     savedTables.splice(tableIndex, 1);
     await updateStorage('./data/tables.json', JSON.stringify(savedTables));
+    return JSON.parse(JSON.stringify(deletedTables));
 }
