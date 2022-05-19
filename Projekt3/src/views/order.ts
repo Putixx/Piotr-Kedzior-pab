@@ -3,7 +3,7 @@
 import express from "express";
 import { Request, Response } from "express";
 import { createOrder, deleteOrder, readAllOrders, readOrder, updateOrder } from "../services/orderServices";
-import { createOrderValidation } from "../validation/orderValidation";
+import { createOrderValidation, deleteOrderByIDValidation, editOrderByIDValidation, getOrderByIDValidation } from "../validation/orderValidation";
 
 /* SETUP */
 
@@ -13,7 +13,9 @@ const orderRouter = express.Router();
 
 // POST register new order
 orderRouter.post("", async function (req: Request, res: Response) {
-  res.status(201).send(createOrderValidation(req.body) + await createOrder(JSON.parse(JSON.stringify(req.body))));
+  createOrderValidation(req.body);
+
+  res.status(201).send(await createOrder(JSON.parse(JSON.stringify(req.body))));
 });
 
 /* GET */
@@ -25,23 +27,16 @@ orderRouter.get("", async function (req: Request, res: Response) {
 
 // GET registered order by id
 orderRouter.get("/:id", async function (req: Request, res: Response) {
-  if (!req.params.id) {
-    return res.status(400).send("You need to send ID!");
-  }
+  getOrderByIDValidation(+req.params.id);
   
-  return res.status(200).send("Order: " + await readOrder(+req.params.id));
+  return res.status(200).send(await readOrder(+req.params.id));
 });
 
 /* PUT */
 
 // EDIT registered order by id
 orderRouter.put("/:id", async function (req: Request, res: Response) {
-  if(!req.body) {
-    return res.status(400).send("You need to send new data to update existing order!");
-  }
-  if (!req.params.id) {
-    return res.status(400).send("You need to send ID!");
-  }
+  editOrderByIDValidation(req.body, +req.params.id);
   
   return res.status(200).send(await updateOrder(JSON.parse(JSON.stringify(req.body)), +req.params.id));
 });
@@ -50,9 +45,7 @@ orderRouter.put("/:id", async function (req: Request, res: Response) {
 
 // DELETE registered order by id
 orderRouter.delete("/:id", async function (req: Request, res: Response) {
-  if (!req.params.id) {
-    return res.status(400).send("You need to send ID!");
-  }
+  deleteOrderByIDValidation(+req.params.id);
   
   return res.status(200).send(await deleteOrder(+req.params.id));
 });

@@ -5,7 +5,7 @@ import { Meal } from "../models/mealModel";
 /* FUNCTIONS */
 
 // Create new meal
-export function createMealValidation(data: Meal): void {
+export function createMealValidation(data: any): void {
     if (!data) {
         throw new Error("To register a new meal you need to send it's: name, price, and category!");
       }
