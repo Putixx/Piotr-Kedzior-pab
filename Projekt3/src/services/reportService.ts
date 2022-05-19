@@ -24,7 +24,7 @@ export async function reportByWorkerID(searchID: number): Promise<JSON> {
 }
 
 // Report orders by specified time period
-export async function reportOrdersByTime(start: string, end: string): Promise<string> {
+export async function reportOrdersByTime(start: string, end: string): Promise<JSON> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
     const dateStart = new Date(start);
