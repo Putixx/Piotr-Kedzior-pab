@@ -9,7 +9,7 @@ import { readStorage, updateStorage } from "../services/storageService";
 /* FUNCTIONS */
 
 // Create new order
-export async function createOrder(data: Order): Promise<number> {
+export async function createOrder(data: Order): Promise<JSON> {
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
     const specificWorker = savedWorkers.find(w => w.name === data.worker.name && w.surname === data.worker.surname && w.occupation === data.worker.occupation);
 
@@ -65,35 +65,22 @@ export async function createOrder(data: Order): Promise<number> {
 
     savedOrders.push(newOrder);
     await updateStorage('./data/orders.json', JSON.stringify(savedOrders));
-    return newOrder.id;
+    return JSON.parse(JSON.stringify(newOrder));
 }
 
 // Read all orders
-export async function readAllOrders(): Promise<string> {
+export async function readAllOrders(): Promise<JSON> {
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
     if(savedOrders.length < 1) {
         throw new Error("There are no orders!");
     }
 
-    let print = "";
-    let meals = "";
-
-    for(let i = 0; i < savedOrders.length; i++) {
-        for(let j = 0; j < savedOrders[i].meals.length; j++) {
-        meals += " Meal name: " + savedOrders[i].meals[j].name + " Meal price: " + savedOrders[i].meals[j].price + " Meal category: " + savedOrders[i].meals[j].category + " ";
-        }
-
-        print += "ID: " + savedOrders[i].id + " Worker name: " + savedOrders[i].worker.name + " Worker surname: " + savedOrders[i].worker.surname 
-        + " Worker occupation: " + savedOrders[i].worker.occupation + meals + " Status: " + savedOrders[i].status + " Table name: " 
-        + savedOrders[i].table.name + " Table number of place settings: " + savedOrders[i].table.numPlaces + " Table status: " 
-        + savedOrders[i].table.status + " Price: " + savedOrders[i].price + "\n";
-    }
-    return print;
+    return JSON.parse(JSON.stringify(savedOrders));
 }
 
 // Read order specified by ID
-export async function readOrder(searchID: number): Promise<string> {
+export async function readOrder(searchID: number): Promise<JSON> {
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
     if(savedOrders.length < 1) {
@@ -106,21 +93,11 @@ export async function readOrder(searchID: number): Promise<string> {
       throw new Error("Wrong ID!");
     }
   
-    let meals = "";
-  
-    for(let j = 0; j < savedOrders[orderIndex].meals.length; j++) {
-      meals += " Meal name: " + savedOrders[orderIndex].meals[j].name + " Meal price: " + savedOrders[orderIndex].meals[j].price 
-      + " Meal category: " + savedOrders[orderIndex].meals[j].category + " ";
-    }
-  
-    return "ID: " + savedOrders[orderIndex].id + " Worker name: " + savedOrders[orderIndex].worker.name + " Worker surname: " + savedOrders[orderIndex].worker.surname 
-    + " Worker occupation: " + savedOrders[orderIndex].worker.occupation + meals + " Status: " + savedOrders[orderIndex].status + " Table name: " 
-    + savedOrders[orderIndex].table.name + " Table number of place settings: " + savedOrders[orderIndex].table.numPlaces + " Table status: " 
-    + savedOrders[orderIndex].table.status + " Price: " + savedOrders[orderIndex].price + "\n";
+    return JSON.parse(JSON.stringify(savedOrders[orderIndex]));
 }
 
 // Update existing order specified by ID
-export async function updateOrder(data: Order, searchID: number): Promise<string> {
+export async function updateOrder(data: Order, searchID: number): Promise<JSON> {
     const savedWorkers: Worker[] = JSON.parse(await readStorage('./data/workers.json')) ?? [];
 
     if(!savedWorkers.find(w => w.name === data.worker.name && w.surname === data.worker.surname && w.occupation === data.worker.occupation)) {
@@ -153,18 +130,6 @@ export async function updateOrder(data: Order, searchID: number): Promise<string
         throw new Error("Wrong ID!");
     }
 
-    let meals = "";
-
-    for(let j = 0; j < savedOrders[orderIndex].meals.length; j++) {
-        meals += " Meal name: " + savedOrders[orderIndex].meals[j].name + " Meal price: " + savedOrders[orderIndex].meals[j].price 
-        + " Meal category: " + savedOrders[orderIndex].meals[j].category + " ";
-    }
-
-    const printOld = "ID: " + savedOrders[orderIndex].id + " Worker name: " + savedOrders[orderIndex].worker.name + " Worker surname: " + savedOrders[orderIndex].worker.surname 
-    + " Worker occupation: " + savedOrders[orderIndex].worker.occupation + meals + " Status: " + savedOrders[orderIndex].status + " Table name: " 
-    + savedOrders[orderIndex].table.name + " Table number of place settings: " + savedOrders[orderIndex].table.numPlaces + " Table status: " 
-    + savedOrders[orderIndex].table.status + " Price: " + savedOrders[orderIndex].price + "\n";
-
     if(data.worker) {
         savedOrders[orderIndex].worker = data.worker;
     }
@@ -181,22 +146,12 @@ export async function updateOrder(data: Order, searchID: number): Promise<string
         savedOrders[orderIndex].price = data.price;
     }
 
-    for(let j = 0; j < savedOrders[orderIndex].meals.length; j++) {
-        meals += " Meal name: " + savedOrders[orderIndex].meals[j].name + " Meal price: " + savedOrders[orderIndex].meals[j].price 
-        + " Meal category: " + savedOrders[orderIndex].meals[j].category + " ";
-    }
-
-    const printNew = "ID: " + savedOrders[orderIndex].id + " Worker name: " + savedOrders[orderIndex].worker.name + " Worker surname: " + savedOrders[orderIndex].worker.surname 
-    + " Worker occupation: " + savedOrders[orderIndex].worker.occupation + meals + " Status: " + savedOrders[orderIndex].status + " Table name: " 
-    + savedOrders[orderIndex].table.name + " Table number of place settings: " + savedOrders[orderIndex].table.numPlaces + " Table status: " 
-    + savedOrders[orderIndex].table.status + " Price: " + savedOrders[orderIndex].price + "\n";
-
     await updateStorage('./data/orders.json', JSON.stringify(savedOrders));
-    return printOld + printNew;
+    return JSON.parse(JSON.stringify(savedOrders[orderIndex]));
 }
 
 // Delete existing order specified by ID
-export async function deleteOrder(searchID: number): Promise<void> {
+export async function deleteOrder(searchID: number): Promise<JSON> {
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
 
     if(savedOrders.length < 1) {
@@ -209,6 +164,8 @@ export async function deleteOrder(searchID: number): Promise<void> {
         throw new Error("Wrong ID!");
     }
 
+    const deletedOrder = savedOrders[orderIndex];
     savedOrders.splice(orderIndex, 1);
     await updateStorage('./data/orders.json', JSON.stringify(savedOrders));
+    return JSON.parse(JSON.stringify(deletedOrder));
 }

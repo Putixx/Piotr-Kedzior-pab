@@ -17,9 +17,18 @@ export async function createMeal(data: Meal): Promise<JSON> {
       if(savedProduct) {
         const savedProductsToOrder: Product[] = JSON.parse(await readStorage('./data/productsToOrder.json')) ?? [];
         savedProduct.quantity = 10;
-        if(savedProductsToOrder.find(p => p.name === newMeal.name &&  p.price === newMeal.price && p.quantity === 10) === savedProduct) {
+        if(savedProductsToOrder.find(p => p.name === newMeal.name &&  p.price === newMeal.price && p.quantity === 10) !== savedProduct) {
           savedProductsToOrder.push(savedProduct);
           await updateStorage('./data/productsToOrder.json', JSON.stringify(savedProductsToOrder));
+          return JSON.parse(JSON.stringify(savedProduct));
+        }
+        else {
+          const productIndex = savedProductsToOrder.findIndex(p => p.name === newMeal.name &&  p.price === newMeal.price && p.quantity === 10);
+          if(productIndex !== -1) {
+            savedProductsToOrder[productIndex].quantity += 10;
+            await updateStorage('./data/productsToOrder.json', JSON.stringify(savedProductsToOrder));
+            return JSON.parse(JSON.stringify(savedProductsToOrder[productIndex]));
+          }
         }
       }
       else {
@@ -33,14 +42,23 @@ export async function createMeal(data: Meal): Promise<JSON> {
         
         const savedProductsToOrder: Product[] = JSON.parse(await readStorage('./data/productsToOrder.json')) ?? [];
 
-        if(savedProductsToOrder.find(p => p.name === newMeal.name &&  p.price === newMeal.price && p.quantity === 10) === newProductToOrder) {
+        if(!savedProductsToOrder.find(p => p.name === newProductToOrder.name &&  p.price === newProductToOrder.price && p.quantity === 10)) {
           savedProductsToOrder.push(newProductToOrder);
           await updateStorage('./data/productsToOrder.json', JSON.stringify(savedProductsToOrder));
+          return JSON.parse(JSON.stringify(newProductToOrder));
+        }
+        else {
+          const productIndex = savedProductsToOrder.findIndex(p => p.name === newMeal.name &&  p.price === newMeal.price && p.quantity === 10);
+          if(productIndex !== -1) {
+            savedProductsToOrder[productIndex].quantity += 10;
+            await updateStorage('./data/productsToOrder.json', JSON.stringify(savedProductsToOrder));
+            return JSON.parse(JSON.stringify(savedProductsToOrder[productIndex]));
+          }
         }
       }
     }
-
-    if(savedMeals.find(m => m.name === newMeal.name &&  m.price === newMeal.price &&  m.category === newMeal.category)) {
+    
+      if(savedMeals.find(m => m.name === newMeal.name &&  m.price === newMeal.price &&  m.category === newMeal.category)) {
         throw new Error("Current meal is already registered!");
     }
 

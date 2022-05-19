@@ -122,7 +122,7 @@ export async function reportIncomeByTime(start: string, end: string): Promise<nu
 
     for(let i = 0; i < specificOrders.length; i++) {
         for(let j = 0; j < specificOrders[i].length; j++) { 
-            income += parseFloat(specificOrders[i][j].price);
+            income += specificOrders[i][j].price;
         }
     }
     

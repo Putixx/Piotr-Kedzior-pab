@@ -1,22 +1,54 @@
 /* IMPORT */
 
+import { Meal } from "../models/mealModel";
 
 /* FUNCTIONS */
 
 // Create new meal
-export function createMealValidation(data: any): string {
+export function createMealValidation(data: Meal): void {
     if (!data) {
-        return "To register a new meal you need to send it's: name, price, and category!";
+        throw new Error("To register a new meal you need to send it's: name, price, and category!");
       }
-      if (!data.name) {
-        return "Name is missing!";
+      else if (!data.name) {
+        throw new Error("Name is missing!");
       }
-      if (!data.price) {
-        return "Price time is missing!";
+      else if (!data.price) {
+        throw new Error("Price is missing!");
       }
-      if (!data.category) {
-        return "Category is missing!";
+      else if (!data.category) {
+        throw new Error("Category is missing!");
       }
+      else {
+        console.log("Meal validation succeded!");
+      }
+}
 
-    return "New meal registration succeded! It's ID: ";
+// Get by id
+export function getMealByIDValidation(id: number): void {
+  if (!id) {
+    throw new Error("You need to send ID!");
+  }
+
+  console.log("getMealByIDValidation success!");
+}
+
+// Put by id
+export function editMealByIDValidation(data: any, id: number): void {
+  if(!data) {
+    throw new Error("You need to send new data to update existing meal!");
+  }
+  if (!id) {
+    throw new Error("You need to send ID!");
+  }
+
+  console.log("editMealByIDValidation success!");
+}
+
+// Delete by id
+export function deleteMealByIDValidation(id: number): void {
+  if (!id) {
+    throw new Error("You need to send ID!");
+  }
+
+  console.log("deleteMealByIDValidation success!");
 }
