@@ -7,7 +7,7 @@ import { readStorage, updateStorage } from "../services/storageService";
 /* FUNCTIONS */
 
 // Create new rezervation
-export async function createRezervation(data: Rezervation): Promise<number> {
+export async function createRezervation(data: Rezervation): Promise<JSON> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
     const savedTables: Table[] = JSON.parse(await readStorage('./data/tables.json')) ?? [];
     const specificTable = savedTables.find(t => t.name === data.table.name && t.numPlaces === data.table.numPlaces);
@@ -31,30 +31,22 @@ export async function createRezervation(data: Rezervation): Promise<number> {
 
     savedRezervations.push(newRezervation);
     await updateStorage('./data/rezervations.json', JSON.stringify(savedRezervations));
-    return newRezervation.id;
+    return JSON.parse(JSON.stringify(newRezervation));
 }
 
 // Read all rezervations
-export async function readAllRezervations(): Promise<string> {
+export async function readAllRezervations(): Promise<JSON> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
 
     if(savedRezervations.length < 1) {
         throw new Error("There are no rezervations!");
     }
 
-    let print = "";
-
-    for(let i = 0; i < savedRezervations.length; i++) {
-        print += "ID: " + savedRezervations[i].id + " Table name: " + savedRezervations[i].table.name + " Table number of place settings: " 
-        + savedRezervations[i].table.numPlaces + " Table status: " + savedRezervations[i].table.status + " Start: " + savedRezervations[i].start 
-        + " End: " + savedRezervations[i].end + " Client: " + savedRezervations[i].client + "\n";
-    }
-
-    return print;
+    return JSON.parse(JSON.stringify(savedRezervations));
 }
 
 // Read rezervation specified by ID
-export async function readRezervation(searchID: number): Promise<string> {
+export async function readRezervation(searchID: number): Promise<JSON> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
 
     if(savedRezervations.length < 1) {
@@ -67,14 +59,11 @@ export async function readRezervation(searchID: number): Promise<string> {
         throw new Error("Wrong ID!");
     }
 
-    return "ID: " + savedRezervations[rezervationIndex].id + " Table name: " + savedRezervations[rezervationIndex].table.name + " Table number of place settings: " 
-    + savedRezervations[rezervationIndex].table.numPlaces + " Table status: " + savedRezervations[rezervationIndex].table.status 
-    + " Start: " + savedRezervations[rezervationIndex].start + " End: " + savedRezervations[rezervationIndex].end + " Client: " 
-    + savedRezervations[rezervationIndex].client + "\n";
+    return JSON.parse(JSON.stringify(savedRezervations[rezervationIndex]));
 }
 
 // Update existing rezervation specified by ID
-export async function updateRezervation(data: Rezervation, searchID: number): Promise<string> {
+export async function updateRezervation(data: Rezervation, searchID: number): Promise<JSON> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
 
     if(savedRezervations.length < 1) {
@@ -86,11 +75,6 @@ export async function updateRezervation(data: Rezervation, searchID: number): Pr
     if(rezervationIndex === -1) {
         throw new Error("Wrong ID!");
     }
-
-    const printOld = "ID: " + savedRezervations[rezervationIndex].id + " Table name: " + savedRezervations[rezervationIndex].table.name + " Table number of place settings: " 
-    + savedRezervations[rezervationIndex].table.numPlaces + " Table status: " + savedRezervations[rezervationIndex].table.status 
-    + " Start: " + savedRezervations[rezervationIndex].start + " End: " + savedRezervations[rezervationIndex].end + " Client: " 
-    + savedRezervations[rezervationIndex].client + "\n";
 
     if(data.table) {
         savedRezervations[rezervationIndex].table = data.table;
@@ -105,17 +89,12 @@ export async function updateRezervation(data: Rezervation, searchID: number): Pr
         savedRezervations[rezervationIndex].client = data.client;
     }
     
-    const printNew = "ID: " + savedRezervations[rezervationIndex].id + " Table name: " + savedRezervations[rezervationIndex].table.name + " Table number of place settings: " 
-    + savedRezervations[rezervationIndex].table.numPlaces + " Table status: " + savedRezervations[rezervationIndex].table.status 
-    + " Start: " + savedRezervations[rezervationIndex].start + " End: " + savedRezervations[rezervationIndex].end + " Client: " 
-    + savedRezervations[rezervationIndex].client + "\n";
-
     await updateStorage('./data/rezervations.json', JSON.stringify(savedRezervations));
-    return printOld + printNew;
+    return JSON.parse(JSON.stringify(savedRezervations[rezervationIndex]));
 }
 
 // Delete existing rezervation specified by ID
-export async function deleteRezervation(searchID: number): Promise<void> {
+export async function deleteRezervation(searchID: number): Promise<JSON> {
     const savedRezervations: Rezervation[] = JSON.parse(await readStorage('./data/rezervations.json')) ?? [];
 
     if(savedRezervations.length < 1) {
@@ -128,6 +107,8 @@ export async function deleteRezervation(searchID: number): Promise<void> {
         throw new Error("Wrong ID!");
     }
 
+    const deletedRezervation = savedRezervations[rezervationIndex];
     savedRezervations.splice(rezervationIndex, 1);
     await updateStorage('./data/rezervations.json', JSON.stringify(savedRezervations));
+    return JSON.parse(JSON.stringify(deletedRezervation));
 }
