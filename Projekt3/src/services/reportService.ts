@@ -82,13 +82,16 @@ export async function reportIncomeByTime(start: string, end: string): Promise<JS
         throw new Error("There are no orders in this time period!");
     }
 
-    let income = 0;
+    const incomeReport = {
+        id: Date.now(),
+        income: 0
+    }
 
     for(let i = 0; i < specificOrders.length; i++) {
         for(let j = 0; j < specificOrders[i].length; j++) { 
-            income += specificOrders[i][j].price;
+            incomeReport.income += specificOrders[i][j].price;
         }
     }
     
-    return JSON.parse(JSON.stringify(income));
+    return JSON.parse(JSON.stringify(incomeReport));
 }

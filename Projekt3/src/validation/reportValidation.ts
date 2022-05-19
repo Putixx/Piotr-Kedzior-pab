@@ -6,7 +6,7 @@
 
 // Report per worker
 export function reportPerWorkerValidation(workerid: number): void {
-    if (workerid) {
+    if (!workerid) {
         throw new Error("You need to send worker's ID!");
       }
 
