@@ -47,7 +47,11 @@ export async function reportOrdersByTime(start: string, end: string): Promise<st
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
     const dateStart = new Date(start);
     const dateEnd = new Date(end);
-    const specificRezervations = savedRezervations.filter(r =>new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime());
+    const specificRezervations = savedRezervations.filter(r => 
+        (new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.start).getTime() <= new Date(dateEnd).getTime()) || 
+        (new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime()) || 
+        (new Date(r.start).getTime() <= new Date(dateStart).getTime() && new Date(r.end).getTime() >= new Date(dateEnd).getTime()) || 
+        (new Date(r.end).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime()));
     const specificOrders: Order[][] = [];
 
     if(!specificRezervations) {
@@ -92,7 +96,11 @@ export async function reportIncomeByTime(start: string, end: string): Promise<nu
     const savedOrders: Order[] = JSON.parse(await readStorage('./data/orders.json')) ?? [];
     const dateStart = new Date(start);
     const dateEnd = new Date(end);
-    const specificRezervations = savedRezervations.filter(r => new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime());
+    const specificRezervations = savedRezervations.filter(r => 
+        (new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.start).getTime() <= new Date(dateEnd).getTime()) || 
+        (new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime()) || 
+        (new Date(r.start).getTime() <= new Date(dateStart).getTime() && new Date(r.end).getTime() >= new Date(dateEnd).getTime()) || 
+        (new Date(r.end).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime()));
     const specificOrders: Order[][] = [];
 
     if(!specificRezervations) {
