@@ -40,6 +40,16 @@ ORDER:
 
 
 
+const specificRezervations = savedRezervations.filter(r => 
+                                                        (new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.start).getTime() <= new Date(dateEnd).getTime()) || 
+                                                        (new Date(r.start).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime()) || 
+                                                        (new Date(r.start).getTime() <= new Date(dateStart).getTime() && new Date(r.end).getTime() >= new Date(dateEnd).getTime()) || 
+                                                        (new Date(r.end).getTime() >= new Date(dateStart).getTime() && new Date(r.end).getTime() <= new Date(dateEnd).getTime()));
+
+
+
+
+
 
 
 
