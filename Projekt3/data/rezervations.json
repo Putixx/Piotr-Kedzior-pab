@@ -1,1 +1,1 @@
-[]
+[{"id":1652983402034,"table":{"id":1652983381080,"name":"table2","numPlaces":"12","status":"taken"},"start":"2022-05-05T16:00:00.000Z","end":"2022-05-05T18:00:00.000Z","client":"Joan Merk"},{"id":1652983413439,"table":{"id":1652983385202,"name":"table3","numPlaces":"2","status":"taken"},"start":"2022-04-03T19:30:00.000Z","end":"2022-04-03T21:00:00.000Z","client":"Joan Merk"}]
