@@ -74,7 +74,7 @@ export function getProductByIDValidation(id: number): void {
     console.log("getProductByIDValidation success!");
 }
 
-// GET registered products in sorted order by param
+// edit product validation
 export function editProductByIDValidation(data: any, id: number): void {
     if(!data) {
         throw new Error("You need to send new data to update existing product!");
